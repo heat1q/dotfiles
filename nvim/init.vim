@@ -11,7 +11,7 @@ Plug 'simrat39/rust-tools.nvim' " See hrsh7th's other plugins for more completio
 Plug 'hrsh7th/vim-vsnip' " Snippet engine
 Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
-Plug 'nvim-telescope/telescope.nvim' " Fuzzy finder 
+Plug 'nvim-telescope/telescope.nvim' " Fuzzy finder; requires fzf installed
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'windwp/nvim-autopairs'
 Plug 'kyazdani42/nvim-web-devicons' " optional, for file icons
@@ -21,8 +21,15 @@ Plug 'romgrk/barbar.nvim'
 Plug 'lewis6991/gitsigns.nvim'
 Plug 'fedepujol/move.nvim'
 Plug 'ray-x/lsp_signature.nvim'
-Plug 'nvim-lua/plenary.nvim' " nvim-go
-Plug 'crispgm/nvim-go'
+" Plug 'nvim-lua/plenary.nvim' " dependency of nvim-go
+" Plug 'crispgm/nvim-go'
+Plug 'neovim/nvim-lspconfig'
+Plug 'ray-x/go.nvim'
+Plug 'ray-x/guihua.lua'
+" Plug '~/github/go.nvim'
+Plug 'mfussenegger/nvim-dap'
+Plug 'rcarriga/nvim-dap-ui'
+Plug 'theHamsta/nvim-dap-virtual-text'
 Plug 'ayu-theme/ayu-vim' " color theme
 
 call plug#end()
@@ -31,7 +38,7 @@ set termguicolors     " enable true colors support
 let ayucolor="dark" " for mirage version of theme
 colorscheme ayu
 
-set scrolloff=4
+set scrolloff=8
 set scrolljump=1
 
 " ui
@@ -69,9 +76,45 @@ set shortmess+=c
 " rust-tools will configure and enable certain LSP features for us.
 " See https://github.com/simrat39/rust-tools.nvim#configuration
 lua <<EOF
-local nvim_lsp = require'lspconfig'
+-- Setup Completion
+-- See https://github.com/hrsh7th/nvim-cmp#basic-configuration
+local cmp = require'cmp'
+cmp.setup({
+  -- Enable LSP snippets
+  snippet = {
+    expand = function(args)
+        vim.fn["vsnip#anonymous"](args.body)
+    end,
+  },
+  mapping = {
+    ['<C-p>'] = cmp.mapping.select_prev_item(),
+    ['<C-n>'] = cmp.mapping.select_next_item(),
+    -- Add tab support
+    ['<S-Tab>'] = cmp.mapping.select_prev_item(),
+    ['<Tab>'] = cmp.mapping.select_next_item(),
+    ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+    ['<C-f>'] = cmp.mapping.scroll_docs(4),
+    ['<C-Space>'] = cmp.mapping.complete(),
+    ['<C-e>'] = cmp.mapping.close(),
+    ['<CR>'] = cmp.mapping.confirm({
+      behavior = cmp.ConfirmBehavior.Insert,
+      select = true,
+    }),
+  },
 
-local rt = require("rust-tools")
+  -- Installed sources
+  sources = {
+    { name = 'nvim_lsp' },
+    { name = 'vsnip' },
+    { name = 'path' },
+    { name = 'buffer' },
+  },
+})
+
+-- Set up lspconfig.
+local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+
+local nvim_lsp = require'lspconfig'
 
 local on_attach = function(client, bufnr)
   local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
@@ -106,10 +149,10 @@ local on_attach = function(client, bufnr)
 end
 
 -- from https://github.com/simrat39/rust-tools.nvim
+local rt = require("rust-tools")
 rt.setup({
     tools = { -- rust-tools options
         autoSetHints = true,
-        hover_with_actions = true,
         inlay_hints = {
             show_parameter_hints = false,
             parameter_hints_prefix = "",
@@ -122,7 +165,14 @@ rt.setup({
     -- see https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#rust_analyzer
     server = {
         -- on_attach is a callback called when the language server attachs to the buffer
-        on_attach = on_attach,
+        on_attach = function(client, bufnr)
+            -- Hover actions
+            vim.keymap.set("n", "<C-space>", rt.hover_actions.hover_actions, { buffer = bufnr })
+            -- Code action groups
+            vim.keymap.set("n", "<Leader>a", rt.code_action_group.code_action_group, { buffer = bufnr })
+    
+            on_attach(client, bufnr)
+        end,
 
         settings = {
             -- to enable rust-analyzer settings visit:
@@ -137,22 +187,58 @@ rt.setup({
     },
 })
 
--- setup nvim-go
 require('go').setup({
-    auto_format = true,
-    auto_lint = false,
-    test_flags = {'-v', '-tags=unit,integration'},
-     -- show test result with popup window
-    test_popup = true,
-    test_popup_auto_leave = true,
-    test_popup_width = 160,
-    test_popup_height = 40,
+  goimport='goimports', -- goimport command
+  gofmt = 'gofumpt', --gofmt cmd,
+  max_line_len = 120, -- max line length in goline format
+  tag_transform = false, -- tag_transfer  check gomodifytags for details
+  verbose = true,  -- output loginf in messages
+  log_path = vim.fn.expand("$HOME") .. "/gonvim.log",
+  lsp_cfg = {
+    capabilities = capabilities,
+  }, -- true: apply go.nvim non-default gopls setup
+  lsp_gofumpt = false, -- true: set default gofmt in gopls format to gofumpt
+  lsp_on_attach = true, -- if a on_attach function provided:  attach on_attach function to gopls
+                       -- true: will use go.nvim on_attach if true
+                       -- nil/false do nothing
+
+  lsp_codelens = true,
+  -- gopls_remote_auto = true, -- set to false is you do not want to pass -remote=auto to gopls(enable share)
+  -- gopls_cmd = nil,
+  -- if you need to specify gopls path and cmd, e.g {"/home/user/lsp/gopls", "-logfile", "/var/log/gopls.log" }
+  lsp_diag_hdlr = true, -- hook lsp diag handler
+  dap_debug = true, -- set to true to enable dap
+  dap_debug_keymap = true, -- set keymaps for debugger
+  dap_debug_gui = true, -- set to true to enable dap gui, highly recommand
+  dap_debug_vt = true, -- set to true to enable dap virtual text
+  build_tags = 'unit,integration',
+
+  test_runner = 'richgo', -- richgo, go test, richgo, dlv, ginkgo
+  verbose_tests = true, -- set to add verbose flag to tests
+  run_in_floaterm = false -- set to true to run in float window.
 })
+-- setup nvim-go
+--require('go').setup({
+--    auto_format = true,
+--   auto_lint = false,
+--	formatter = 'goimports',
+--    test_flags = {'-v', '-tags=unit,integration'},
+--    -- show test result with popup window
+--    test_popup = true,
+--    test_popup_auto_leave = true,
+--    test_popup_width = 160,
+--    test_popup_height = 40,
+--})
 
 -- setup lsp client
-require('lspconfig').gopls.setup({
-    on_attach = on_attach,
-})
+--require('lspconfig').gopls.setup({
+--    on_attach = on_attach,
+--    settings = {
+--        gopls = {
+--            buildFlags = {'-tags=unit,integration'},
+--        },
+--    },
+--})
 
 -- setup python lsp
 nvim_lsp.pyright.setup{}
@@ -166,40 +252,9 @@ nvim_lsp.tsserver.setup{
 -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#eslint
 nvim_lsp.eslint.setup{}
 
--- Setup Completion
--- See https://github.com/hrsh7th/nvim-cmp#basic-configuration
-local cmp = require'cmp'
-cmp.setup({
-  -- Enable LSP snippets
-  snippet = {
-    expand = function(args)
-        vim.fn["vsnip#anonymous"](args.body)
-    end,
-  },
-  mapping = {
-    ['<C-p>'] = cmp.mapping.select_prev_item(),
-    ['<C-n>'] = cmp.mapping.select_next_item(),
-    -- Add tab support
-    ['<S-Tab>'] = cmp.mapping.select_prev_item(),
-    ['<Tab>'] = cmp.mapping.select_next_item(),
-    ['<C-d>'] = cmp.mapping.scroll_docs(-4),
-    ['<C-f>'] = cmp.mapping.scroll_docs(4),
-    ['<C-Space>'] = cmp.mapping.complete(),
-    ['<C-e>'] = cmp.mapping.close(),
-    ['<CR>'] = cmp.mapping.confirm({
-      behavior = cmp.ConfirmBehavior.Insert,
-      select = true,
-    })
-  },
+-- setup Terraform language server
+nvim_lsp.terraformls.setup{}
 
-  -- Installed sources
-  sources = {
-    { name = 'nvim_lsp' },
-    { name = 'vsnip' },
-    { name = 'path' },
-    { name = 'buffer' },
-  },
-})
 
 require("nvim-autopairs").setup {}
 
@@ -237,7 +292,7 @@ require'nvim-treesitter.configs'.setup {
     -- Install parsers synchronously (only applied to `ensure_installed`)
     sync_install = false,
     -- Automatically install missing parsers when entering buffer
-    auto_install = false,
+    auto_install = true,
     -- List of parsers to ignore installing (for "all")
     -- ignore_install = { "javascript" },
     highlight = {
@@ -248,13 +303,13 @@ require'nvim-treesitter.configs'.setup {
       -- Instead of true it can also be a list of languages
       additional_vim_regex_highlighting = true,
     },
-  }
+}
 
 vim.api.nvim_create_autocmd('BufWinEnter', {
   pattern = '*',
   callback = function()
     if vim.bo.filetype == 'NvimTree' then
-      require'bufferline.state'.set_offset(37, 'FileTree')
+      require'bufferline.api'.set_offset(37, 'FileTree')
     end
   end
 })
@@ -263,12 +318,16 @@ vim.api.nvim_create_autocmd('BufWinLeave', {
   pattern = '*',
   callback = function()
     if vim.fn.expand('<afile>'):match('NvimTree') then
-      require'bufferline.state'.set_offset(0)
+      require'bufferline.api'.set_offset(0)
     end
   end
 })
 
-require('gitsigns').setup()
+require('gitsigns').setup({
+  signcolumn = true,
+  numhl      = true,
+  current_line_blame = true,
+})
 EOF
 
 " ================================
@@ -277,6 +336,15 @@ EOF
 
 " Fix with eslint on save for ts and js files
 autocmd BufWritePre *.tsx,*.ts,*.jsx,*.js EslintFixAll
+
+" Run gofmt + goimport on save
+autocmd BufWritePre *.go :silent! lua require('go.format').goimport()
+
+" configure indentation
+autocmd FileType python set expandtab tabstop=4 softtabstop=4 shiftwidth=4
+autocmd FileType rust set expandtab tabstop=4 softtabstop=4 shiftwidth=4
+autocmd FileType terraform set expandtab tabstop=2 softtabstop=2 shiftwidth=2
+autocmd FileType go set expandtab!
 
 " Set updatetime for CursorHold
 " 300ms of no cursor movement to trigger CursorHold
@@ -298,27 +366,16 @@ autocmd BufWritePre *.rs lua vim.lsp.buf.formatting_sync(nil, 200)
 " Mappings
 " ================================
 
-" Documentation navigation
-"nnoremap gd <cmd>lua vim.lsp.buf.definition()<CR>
-"nnoremap gy <cmd>lua vim.lsp.buf.type_definition()<CR>
-"nnoremap <leader>lr <cmd>lua vim.lsp.buf.rename()<CR>
-"nnoremap <leader>k <cmd>lua vim.diagnostic.open_float()<CR>
-"nnoremap [g <cmd>lua vim.diagnostic.goto_prev()<CR>
-"nnoremap ]g <cmd>lua vim.diagnostic.goto_next()<CR>
-
 map <c-z> <nop>
 map <c-q> <nop>
+
+" git blame and preview
+nnoremap gb <Cmd>Gitsigns preview_hunk<cr>
 
 " tabs
 nnoremap <S-tab> <Cmd>BufferPrevious<cr>
 nnoremap <tab> <Cmd>BufferNext<cr>
 nnoremap <c-q> <Cmd>BufferClose<cr>
-
-" undo redo on ctl-x and ctrl-y
-imap <c-z> <esc>:undo<cr>i
-" imap <c-x> <esc>:redo<cr>i
-nmap <c-z> :undo<cr>
-" nmap <c-y> :redo<cr>
 
 " Exit insert mode and save just by hitting CTRL-s
 imap <c-s> <esc>:w<cr>
@@ -329,26 +386,6 @@ map <c-down> }
 map <c-up> {
 map <c-left> b
 map <c-right> w
-
-nnoremap <c-h> b
-nnoremap <c-l> w
-nnoremap <c-k> {
-nnoremap <c-j> }
-
-vnoremap <c-h> b
-vnoremap <c-l> w
-vnoremap <c-k> {
-vnoremap <c-j> }
-
-"map <s-h> <s-left>
-"map <s-l> <s-right>
-"map <s-k> <s-up>
-"map <s-j> <s-down>
-
-"vmap <left> h
-"vmap <right> l
-"vmap <up> k
-"vmap <down> j
 
 "Move text around in visual mod
 nnoremap <A-down> :MoveLine(1)<cr>
@@ -375,6 +412,18 @@ nnoremap <A-h> <C-w>h
 nnoremap <A-j> <C-w>j
 nnoremap <A-k> <C-w>k
 nnoremap <A-l> <C-w>l
+
+" always paste from the 0 register
+vnoremap p "0p
+vnoremap P "0P
+
+" Jump forward or backward
+" https://github.com/hrsh7th/vim-vsnip#2-setting
+imap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+smap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+imap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
+smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
+
 " ================================
 " Leader mapping
 " ================================
