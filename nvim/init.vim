@@ -30,12 +30,14 @@ Plug 'ray-x/guihua.lua'
 Plug 'mfussenegger/nvim-dap'
 Plug 'rcarriga/nvim-dap-ui'
 Plug 'theHamsta/nvim-dap-virtual-text'
-Plug 'ayu-theme/ayu-vim' " color theme
 
 " VS code Snippets
 Plug 'golang/vscode-go' 
 Plug 'rust-lang/vscode-rust' 
 Plug 'xabikos/vscode-javascript' 
+
+" Themes
+Plug 'ayu-theme/ayu-vim' " color theme
 
 call plug#end()
 
@@ -45,6 +47,8 @@ colorscheme ayu
 
 set scrolloff=8
 set scrolljump=1
+
+set mouse= " ignore mouse
 
 " ui
 set number                        " Don't show line numbers
@@ -114,7 +118,7 @@ cmp.setup({
 })
 
 -- Set up lspconfig.
-local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
 
 local nvim_lsp = require'lspconfig'
 
