@@ -32,6 +32,11 @@ Plug 'rcarriga/nvim-dap-ui'
 Plug 'theHamsta/nvim-dap-virtual-text'
 Plug 'ayu-theme/ayu-vim' " color theme
 
+" VS code Snippets
+Plug 'golang/vscode-go' 
+Plug 'rust-lang/vscode-rust' 
+Plug 'xabikos/vscode-javascript' 
+
 call plug#end()
 
 set termguicolors     " enable true colors support
@@ -72,9 +77,6 @@ set completeopt=menuone,noinsert,noselect
 " Avoid showing extra messages when using completion
 set shortmess+=c
 
-" Configure LSP through rust-tools.nvim plugin.
-" rust-tools will configure and enable certain LSP features for us.
-" See https://github.com/simrat39/rust-tools.nvim#configuration
 lua <<EOF
 -- Setup Completion
 -- See https://github.com/hrsh7th/nvim-cmp#basic-configuration
@@ -87,8 +89,8 @@ cmp.setup({
     end,
   },
   mapping = {
-    ['<C-p>'] = cmp.mapping.select_prev_item(),
-    ['<C-n>'] = cmp.mapping.select_next_item(),
+    -- ['<C-p>'] = cmp.mapping.select_prev_item(),
+    -- ['<C-n>'] = cmp.mapping.select_next_item(),
     -- Add tab support
     ['<S-Tab>'] = cmp.mapping.select_prev_item(),
     ['<Tab>'] = cmp.mapping.select_next_item(),
@@ -121,7 +123,7 @@ local on_attach = function(client, bufnr)
   local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
 
   -- Enable completion triggered by <c-x><c-o>
-  buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+  -- buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
 
   -- Mappings.
   local opts = { noremap=true, silent=true }
@@ -134,9 +136,8 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<cr>', opts)
   buf_set_keymap('n', '<leader>lr', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
   buf_set_keymap('n', '<leader>k', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
-  buf_set_keymap('n', '[g', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
-  buf_set_keymap('n', ']g', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
-  -- buf_set_keymap("n", "<leader>lf", "<cmd>RustFmt<CR>", opts)
+  buf_set_keymap('n', 'gp', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
+  buf_set_keymap('n', 'gn', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
   buf_set_keymap("n", "<C-space>", "<cmd>lua vim.lsp.buf.hover()<CR>", opts)
 
   -- Get signatures (and _only_ signatures) when in argument lists.
@@ -148,7 +149,9 @@ local on_attach = function(client, bufnr)
   })
 end
 
--- from https://github.com/simrat39/rust-tools.nvim
+-- Configure LSP through rust-tools.nvim plugin.
+-- rust-tools will configure and enable certain LSP features for us.
+-- See https://github.com/simrat39/rust-tools.nvim#configuration
 local rt = require("rust-tools")
 rt.setup({
     tools = { -- rust-tools options
@@ -166,6 +169,7 @@ rt.setup({
     server = {
         -- on_attach is a callback called when the language server attachs to the buffer
         on_attach = function(client, bufnr)
+            -- vim.keymap.set("n", "<leader>lf", "<cmd>RustFmt<CR>", { buffer = bufnr })
             -- Hover actions
             vim.keymap.set("n", "<C-space>", rt.hover_actions.hover_actions, { buffer = bufnr })
             -- Code action groups
@@ -241,19 +245,34 @@ require('go').setup({
 --})
 
 -- setup python lsp
-nvim_lsp.pyright.setup{}
+nvim_lsp.pyright.setup{
+    on_attach = on_attach,
+    capabilities = capabilities,
+}
 
 -- setup ts language server
 nvim_lsp.tsserver.setup{
     on_attach = on_attach,
+    capabilities = capabilities,
+    settings = {
+        completions = {
+            completeFunctionCalls = true
+        }
+    }
 }
 
 -- setup eslint for js and ts
 -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#eslint
-nvim_lsp.eslint.setup{}
+nvim_lsp.eslint.setup{
+    on_attach = on_attach,
+    capabilities = capabilities,
+}
 
 -- setup Terraform language server
-nvim_lsp.terraformls.setup{}
+nvim_lsp.terraformls.setup{
+    on_attach = on_attach,
+    capabilities = capabilities,
+}
 
 
 require("nvim-autopairs").setup {}
