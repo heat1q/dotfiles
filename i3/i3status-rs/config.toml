@@ -4,10 +4,23 @@ name = "solarized-dark"
 name = "awesome"
 
 [[block]]
-block = "cpu"
+block = "custom"
+cycle = [
+    "brightnessctl set 5% >> /dev/null && echo '{\"icon\": \"backlight_1\", \"text\": \"5%\"}'", 
+    "brightnessctl set 50% >> /dev/null && echo '{\"icon\": \"backlight_7\", \"text\": \"50%\"}'", 
+    "brightnessctl set 100% >> /dev/null && echo '{\"icon\": \"backlight_full\", \"text\": \"100%\"}'", 
+]
+interval = "once"
+json = true
 
 [[block]]
-block = "backlight"
+block = "custom"
+cycle = [
+    "brightnessctl --device='tpacpi::kbd_backlight' set 0 >> /dev/null && echo '{\"icon\": \"keyboard\", \"text\": \"0%\"}'", 
+    "brightnessctl --device='tpacpi::kbd_backlight' set 1 >> /dev/null && echo '{\"icon\": \"keyboard\", \"text\": \"100%\"}'",
+]
+interval = "once"
+json = true
 
 [[block]]
 block = "battery"
@@ -32,9 +45,13 @@ format = "{volume}"
 headphones_indicator = true
 
 [[block]]
-block = "keyboard_layout"
-driver = "setxkbmap"
-interval = 10
+block = "custom"
+cycle = [
+    "setxkbmap -layout de && echo '{\"icon\": \"keyboard\", \"text\": \"DE\"}'", 
+    "setxkbmap -layout us && echo '{\"icon\": \"keyboard\", \"text\": \"US\"}'", 
+]
+interval = "once"
+json = true
 
 [[block]]
 block = "time"
