@@ -145,12 +145,12 @@ local on_attach = function(client, bufnr)
   buf_set_keymap("n", "<C-space>", "<cmd>lua vim.lsp.buf.hover()<CR>", opts)
 
   -- Get signatures (and _only_ signatures) when in argument lists.
-  require "lsp_signature".on_attach({
-    doc_lines = 0,
-    handler_opts = {
-      border = "none"
-    },
-  })
+  -- require "lsp_signature".on_attach({
+  --  doc_lines = 0,
+  --  handler_opts = {
+  --    border = "none"
+  --  },
+  -- })
 end
 
 -- Configure LSP through rust-tools.nvim plugin.
@@ -454,6 +454,7 @@ let mapleader = "\<Space>"
 
 " Find files using Telescope command-line sugar.
 nnoremap <leader>f <cmd>Telescope find_files<cr>
+nnoremap <leader>g <cmd>Telescope git_files<cr>
 nnoremap <leader>b <cmd>Telescope buffers<cr>
 nnoremap <leader>fg <cmd>Telescope live_grep<cr>
 nnoremap <leader>fh <cmd>Telescope help_tags<cr>
