@@ -188,6 +188,9 @@ rt.setup({
             -- to enable rust-analyzer settings visit:
             -- https://github.com/rust-analyzer/rust-analyzer/blob/master/docs/user/generated_config.adoc
             ["rust-analyzer"] = {
+                cargo = {
+                    allFeatures = true    
+                },
                 -- enable clippy on save
                 checkOnSave = {
                     command = "clippy"
@@ -226,6 +229,15 @@ require('go').setup({
   test_runner = 'richgo', -- richgo, go test, richgo, dlv, ginkgo
   verbose_tests = true, -- set to add verbose flag to tests
   run_in_floaterm = false -- set to true to run in float window.
+})
+
+-- Run gofmt on save
+vim.api.nvim_create_autocmd("BufWritePre", {
+  pattern = "*.go",
+  callback = function()
+   require('go.format').gofmt()
+  end,
+  group = format_sync_grp,
 })
 
 -- setup python lsp
@@ -345,9 +357,6 @@ EOF
 " Fix with eslint on save for ts and js files
 autocmd BufWritePre *.tsx,*.ts,*.jsx,*.js EslintFixAll
 
-" Run gofmt + goimport on save
-autocmd BufWritePre *.go :silent! lua require('go.format').goimport()
-
 " configure indentation
 autocmd FileType python set expandtab tabstop=4 softtabstop=4 shiftwidth=4
 autocmd FileType rust set expandtab tabstop=4 softtabstop=4 shiftwidth=4
@@ -389,12 +398,6 @@ nnoremap <c-q> <Cmd>BufferClose<cr>
 imap <c-s> <esc>:w<cr>
 nmap <c-s> :w<cr>
 
-"fast movement
-map <c-down> }
-map <c-up> {
-map <c-left> b
-map <c-right> w
-
 "Move text around in visual mod
 nnoremap <A-down> :MoveLine(1)<cr>
 nnoremap <A-up> :MoveLine(-1)<cr>
@@ -422,8 +425,8 @@ nnoremap <A-k> <C-w>k
 nnoremap <A-l> <C-w>l
 
 " always paste from the 0 register
-vnoremap p "0p
-vnoremap P "0P
+"vnoremap p "0p
+"vnoremap P "0P
 
 " Jump forward or backward
 " https://github.com/hrsh7th/vim-vsnip#2-setting
