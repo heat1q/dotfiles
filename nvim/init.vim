@@ -21,6 +21,7 @@ Plug 'romgrk/barbar.nvim'
 Plug 'lewis6991/gitsigns.nvim'
 Plug 'fedepujol/move.nvim'
 Plug 'ray-x/lsp_signature.nvim'
+Plug 'lukas-reineke/indent-blankline.nvim'
 " Plug 'nvim-lua/plenary.nvim' " dependency of nvim-go
 " Plug 'crispgm/nvim-go'
 Plug 'neovim/nvim-lspconfig'
@@ -42,6 +43,7 @@ Plug 'ayu-theme/ayu-vim' " color theme
 call plug#end()
 
 set termguicolors     " enable true colors support
+
 let ayucolor="dark" " for mirage version of theme
 colorscheme ayu
 
@@ -225,28 +227,6 @@ require('go').setup({
   verbose_tests = true, -- set to add verbose flag to tests
   run_in_floaterm = false -- set to true to run in float window.
 })
--- setup nvim-go
---require('go').setup({
---    auto_format = true,
---   auto_lint = false,
---	formatter = 'goimports',
---    test_flags = {'-v', '-tags=unit,integration'},
---    -- show test result with popup window
---    test_popup = true,
---    test_popup_auto_leave = true,
---    test_popup_width = 160,
---    test_popup_height = 40,
---})
-
--- setup lsp client
---require('lspconfig').gopls.setup({
---    on_attach = on_attach,
---    settings = {
---        gopls = {
---            buildFlags = {'-tags=unit,integration'},
---        },
---    },
---})
 
 -- setup python lsp
 nvim_lsp.pyright.setup{
@@ -287,8 +267,13 @@ require'nvim-web-devicons'.setup {
  default = true;
 }
 
+require("indent_blankline").setup {
+    show_current_context = true,
+    show_current_context_start = false,
+}
+
 -- empty setup using defaults
-require("nvim-tree").setup()
+--require("nvim-tree").setup()
 
 -- OR setup with some options
 require("nvim-tree").setup({
@@ -383,7 +368,7 @@ autocmd CursorHold * lua vim.diagnostic.open_float(nil, { focusable = false })
 " this removes the jitter when warnings/errors flow in
 set signcolumn=yes
 
-autocmd BufWritePre *.rs lua vim.lsp.buf.formatting_sync(nil, 200)
+autocmd BufWritePre *.rs lua vim.lsp.buf.formatting(nil, 200)
 
 " ================================
 " Mappings
