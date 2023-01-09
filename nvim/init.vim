@@ -6,7 +6,7 @@ Plug 'hrsh7th/cmp-nvim-lsp' " LSP completion source for nvim-cmp
 Plug 'hrsh7th/cmp-vsnip' " Snippet completion source for nvim-cmp
 Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-buffer' " Other usefull completion sources
-Plug 'simrat39/rust-tools.nvim' " See hrsh7th's other plugins for more completion sources!
+Plug 'heat1q/rust-tools.nvim' " See hrsh7th's other plugins for more completion sources!
 " To enable more of the features of rust-analyzer, such as inlay hints and more!
 Plug 'hrsh7th/vim-vsnip' " Snippet engine
 Plug 'nvim-lua/popup.nvim'
