@@ -19,7 +19,6 @@ Plug 'kyazdani42/nvim-tree.lua'
 Plug 'preservim/nerdcommenter'
 Plug 'romgrk/barbar.nvim'
 Plug 'lewis6991/gitsigns.nvim'
-Plug 'fedepujol/move.nvim'
 Plug 'ray-x/lsp_signature.nvim'
 Plug 'lukas-reineke/indent-blankline.nvim'
 " Plug 'nvim-lua/plenary.nvim' " dependency of nvim-go
@@ -31,6 +30,8 @@ Plug 'ray-x/guihua.lua'
 Plug 'mfussenegger/nvim-dap'
 Plug 'rcarriga/nvim-dap-ui'
 Plug 'theHamsta/nvim-dap-virtual-text'
+Plug 'MunifTanjim/prettier.nvim'
+Plug 'jose-elias-alvarez/null-ls.nvim'
 
 " VS code Snippets
 Plug 'golang/vscode-go' 
@@ -124,6 +125,24 @@ local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protoc
 
 local nvim_lsp = require'lspconfig'
 
+-- https://github.com/jose-elias-alvarez/null-ls.nvim/wiki/Avoiding-LSP-formatting-conflicts#neovim-08
+local lsp_formatting_async = function(bufnr)
+    vim.lsp.buf.format({
+        filter = function(client)
+            -- apply whatever logic you want (in this example, we'll only use null-ls)
+            -- clients for which format on save should be enabled
+            return true -- client.name == "null-ls"
+        end,
+        bufnr = bufnr,
+        async = async,
+    })
+end
+
+local null_ls = require("null-ls")
+local group = vim.api.nvim_create_augroup("lsp_format_on_save", { clear = false })
+local event = "BufWritePre" -- or "BufWritePost"
+local async = event == "BufWritePost"
+
 local on_attach = function(client, bufnr)
   local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
   local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
@@ -153,7 +172,34 @@ local on_attach = function(client, bufnr)
   --    border = "none"
   --  },
   -- })
+
+    if client.supports_method("textDocument/formatting") then
+      --vim.keymap.set("n", "<Leader>f", function()
+      --  vim.lsp.buf.format({ bufnr = vim.api.nvim_get_current_buf() })
+      --end, { buffer = bufnr, desc = "[lsp] format" })
+
+      -- format on save
+      vim.api.nvim_clear_autocmds({ buffer = bufnr, group = group })
+      vim.api.nvim_create_autocmd(event, {
+        buffer = bufnr,
+        group = group,
+        callback = function()
+          lsp_formatting_async(bufnr)
+        end,
+        desc = "[lsp] format on save",
+      })
+    end
+
+    --if client.supports_method("textDocument/rangeFormatting") then
+    --  vim.keymap.set("x", "<Leader>f", function()
+    --    vim.lsp.buf.format({ bufnr = vim.api.nvim_get_current_buf() })
+    --  end, { buffer = bufnr, desc = "[lsp] format" })
+    --end
 end
+
+null_ls.setup({
+  on_attach = on_attach,
+})
 
 -- Configure LSP through rust-tools.nvim plugin.
 -- rust-tools will configure and enable certain LSP features for us.
@@ -260,9 +306,31 @@ nvim_lsp.tsserver.setup{
 -- setup eslint for js and ts
 -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#eslint
 nvim_lsp.eslint.setup{
-    on_attach = on_attach,
     capabilities = capabilities,
+    on_attach = on_attach,
+    settings = {
+        format = false,
+    }
 }
+
+
+require("prettier").setup({
+  bin = 'prettier', -- or `'prettierd'` (v0.22+)
+  filetypes = {
+    "css",
+    "graphql",
+    "html",
+    "javascript",
+    "javascriptreact",
+    "json",
+    "less",
+    "markdown",
+    "scss",
+    "typescript",
+    "typescriptreact",
+    "yaml",
+  },
+})
 
 -- setup Terraform language server
 nvim_lsp.terraformls.setup{
@@ -354,9 +422,6 @@ EOF
 " Autocmds
 " ================================
 
-" Fix with eslint on save for ts and js files
-autocmd BufWritePre *.tsx,*.ts,*.jsx,*.js EslintFixAll
-
 " configure indentation
 autocmd FileType python set expandtab tabstop=4 softtabstop=4 shiftwidth=4
 autocmd FileType rust set expandtab tabstop=4 softtabstop=4 shiftwidth=4
@@ -365,9 +430,9 @@ autocmd FileType go set expandtab!
 
 " Set updatetime for CursorHold
 " 300ms of no cursor movement to trigger CursorHold
-set updatetime=300
+"set updatetime=300
 " Show diagnostic popup on cursor hold
-autocmd CursorHold * lua vim.diagnostic.open_float(nil, { focusable = false })
+"autocmd CursorHold * lua vim.diagnostic.open_float(nil, { focusable = false })
 
 " Goto previous/next diagnostic warning/error
 " nnoremap <silent> g[ <cmd>lua vim.diagnostic.goto_prev()<CR>
@@ -377,7 +442,7 @@ autocmd CursorHold * lua vim.diagnostic.open_float(nil, { focusable = false })
 " this removes the jitter when warnings/errors flow in
 set signcolumn=yes
 
-autocmd BufWritePre *.rs lua vim.lsp.buf.formatting(nil, 200)
+"autocmd BufWritePre *.rs lua vim.lsp.buf.formatting(nil, 200)
 
 " ================================
 " Mappings
@@ -398,15 +463,6 @@ nnoremap <c-q> <Cmd>BufferClose<cr>
 imap <c-s> <esc>:w<cr>
 nmap <c-s> :w<cr>
 
-"Move text around in visual mod
-nnoremap <A-down> :MoveLine(1)<cr>
-nnoremap <A-up> :MoveLine(-1)<cr>
-
-vnoremap <A-left> <nop>
-vnoremap <A-right> <nop>
-vnoremap <A-down> :MoveBlock(1)<cr>
-vnoremap <A-up> :MoveBlock(-1)<cr>
-
 " Terminal mode
 tnoremap <Esc> <C-\><C-n>
 
@@ -423,10 +479,6 @@ nnoremap <A-h> <C-w>h
 nnoremap <A-j> <C-w>j
 nnoremap <A-k> <C-w>k
 nnoremap <A-l> <C-w>l
-
-" always paste from the 0 register
-"vnoremap p "0p
-"vnoremap P "0P
 
 " Jump forward or backward
 " https://github.com/hrsh7th/vim-vsnip#2-setting
@@ -450,4 +502,3 @@ nnoremap <leader>fh <cmd>Telescope help_tags<cr>
 " Toggle tree and find file
 nnoremap <leader>t <cmd>NvimTreeToggle<cr>
 nnoremap <leader>r <cmd>NvimTreeFindFile<cr>
-
