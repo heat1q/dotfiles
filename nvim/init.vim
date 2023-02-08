@@ -32,6 +32,7 @@ Plug 'rcarriga/nvim-dap-ui'
 Plug 'theHamsta/nvim-dap-virtual-text'
 Plug 'MunifTanjim/prettier.nvim'
 Plug 'jose-elias-alvarez/null-ls.nvim'
+Plug 'nvim-lualine/lualine.nvim'
 
 " VS code Snippets
 Plug 'golang/vscode-go' 
@@ -40,13 +41,16 @@ Plug 'xabikos/vscode-javascript'
 
 " Themes
 Plug 'ayu-theme/ayu-vim' " color theme
+Plug 'rebelot/kanagawa.nvim'
 
 call plug#end()
 
 set termguicolors     " enable true colors support
 
-let ayucolor="dark" " for mirage version of theme
-colorscheme ayu
+"let ayucolor="dark" " for mirage version of theme
+"colorscheme ayu
+
+colorscheme kanagawa
 
 set scrolloff=8
 set scrolljump=1
@@ -95,6 +99,10 @@ cmp.setup({
         vim.fn["vsnip#anonymous"](args.body)
     end,
   },
+  window = {
+    completion = cmp.config.window.bordered(),
+    documentation = cmp.config.window.bordered(),
+  },
   mapping = {
     -- ['<C-p>'] = cmp.mapping.select_prev_item(),
     -- ['<C-n>'] = cmp.mapping.select_next_item(),
@@ -124,6 +132,27 @@ cmp.setup({
 local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
 
 local nvim_lsp = require'lspconfig'
+
+local lsp_signature = require'lsp_signature'
+lsp_signature.setup({
+  bind = true,
+  doc_lines = 0,
+  -- toggle_key = '<C-k>',
+  floating_window = true,
+  floating_window_above_cur_line = true,
+  hint_enable = false, -- virtual hint enable
+  close_timeout = 1,
+  floating_window_off_x=10,
+  floating_windows_off_y=0,
+  fix_pos = false,
+  -- hi_parameter = 'Search',
+  --timer_interval = 100,
+  --extra_trigger_chars = {},
+  handler_opts = {
+    border = 'rounded', -- 'shadow', --{'╭', '─' ,'╮', '│', '╯', '─', '╰', '│' },
+  },
+  max_height = 4,
+})
 
 -- https://github.com/jose-elias-alvarez/null-ls.nvim/wiki/Avoiding-LSP-formatting-conflicts#neovim-08
 local lsp_formatting_async = function(bufnr)
@@ -164,14 +193,6 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', 'gp', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
   buf_set_keymap('n', 'gn', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
   buf_set_keymap("n", "<C-space>", "<cmd>lua vim.lsp.buf.hover()<CR>", opts)
-
-  -- Get signatures (and _only_ signatures) when in argument lists.
-  -- require "lsp_signature".on_attach({
-  --  doc_lines = 0,
-  --  handler_opts = {
-  --    border = "none"
-  --  },
-  -- })
 
     if client.supports_method("textDocument/formatting") then
       --vim.keymap.set("n", "<Leader>f", function()
@@ -257,7 +278,7 @@ require('go').setup({
     capabilities = capabilities,
   }, -- true: apply go.nvim non-default gopls setup
   lsp_gofumpt = false, -- true: set default gofmt in gopls format to gofumpt
-  lsp_on_attach = true, -- if a on_attach function provided:  attach on_attach function to gopls
+  lsp_on_attach = on_attach, -- if a on_attach function provided:  attach on_attach function to gopls
                        -- true: will use go.nvim on_attach if true
                        -- nil/false do nothing
 
@@ -416,6 +437,8 @@ require('gitsigns').setup({
   numhl      = true,
   current_line_blame = true,
 })
+
+require('lualine').setup()
 EOF
 
 " ================================
