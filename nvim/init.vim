@@ -131,6 +131,16 @@ cmp.setup({
 -- Set up lspconfig.
 local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
 
+local border = {'╭', '─' ,'╮', '│', '╯', '─', '╰', '│' }
+
+-- Overwrite global diagnostic handler to use a bordered float
+local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
+function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
+  opts = opts or {}
+  opts.border = opts.border or border
+  return orig_util_open_floating_preview(contents, syntax, opts, ...)
+end
+
 local nvim_lsp = require'lspconfig'
 
 local lsp_signature = require'lsp_signature'
@@ -453,9 +463,9 @@ autocmd FileType go set expandtab!
 
 " Set updatetime for CursorHold
 " 300ms of no cursor movement to trigger CursorHold
-"set updatetime=300
+set updatetime=300
 " Show diagnostic popup on cursor hold
-"autocmd CursorHold * lua vim.diagnostic.open_float(nil, { focusable = false })
+autocmd CursorHold * lua vim.diagnostic.open_float(nil, { focusable = false })
 
 " Goto previous/next diagnostic warning/error
 " nnoremap <silent> g[ <cmd>lua vim.diagnostic.goto_prev()<CR>
