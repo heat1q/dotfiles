@@ -181,6 +181,9 @@ local null_ls = require("null-ls")
 local group = vim.api.nvim_create_augroup("lsp_format_on_save", { clear = false })
 local event = "BufWritePre" -- or "BufWritePost"
 local async = event == "BufWritePost"
+local null_ls_sources = { 
+    null_ls.builtins.formatting.pg_format 
+}
 
 local on_attach = function(client, bufnr)
   local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
@@ -229,6 +232,7 @@ local on_attach = function(client, bufnr)
 end
 
 null_ls.setup({
+  sources = null_ls_sources,
   on_attach = on_attach,
 })
 
