@@ -24,6 +24,7 @@ elif [[ "$1" == "cp" ]]; then
     mv ~/.tmux.conf ~/.tmux.conf.backup 
     cp ./tmux/.tmux.conf ~/.tmux.conf
 
-    mv ~/.config/nvim/init.vim ~/.config/nvim/init.vim.backup
-    cp ./nvim/init.vim ~/.config/nvim/init.vim
+	rm -r ~/.config/nvim.backup || true
+    mv ~/.config/nvim ~/.config/nvim.backup
+    cp -r ./nvim ~/.config/nvim
 fi
