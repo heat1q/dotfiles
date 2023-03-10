@@ -21,10 +21,6 @@ vim.opt.foldmethod = "indent"
 --vim.opt.completeopt = 'menuone,noinsert,noselect'
 --vim.opt.shortmess += 'c'
 
--- Colorscheme
-vim.opt.termguicolors = true
-vim.cmd.colorscheme("kanagawa")
-
 -- ==============================================
 -- Plugins
 -- ==============================================
@@ -32,3 +28,7 @@ require("heat1q.plugins")
 require("heat1q.lsp")
 require("heat1q.autocmds")
 require("heat1q.mappings")
+
+-- Colorscheme
+vim.opt.termguicolors = true
+vim.cmd.colorscheme("kanagawa")
