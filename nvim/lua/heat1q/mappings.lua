@@ -1,7 +1,3 @@
--- Basic clipboard interaction
---vim.keymap.set({'n', 'x'}, 'cp', '"+y')
---vim.keymap.set({'n', 'x'}, 'cv', '"+p')
-
 -- Delete text
 vim.keymap.set({ "n", "x" }, "x", '"_x')
 
@@ -16,6 +12,9 @@ vim.keymap.set("n", "<c-q>", "<cmd>BufferClose<cr>")
 -- Exit insert mode and save just by hitting CTRL-s
 vim.keymap.set("i", "<c-s>", "<esc>:w<cr>")
 vim.keymap.set("n", "<c-s>", ":w<cr>")
+
+-- unbind space so that <leader><p> does not shift your paste
+vim.keymap.set({ "n", "x" }, " ", "<nop>")
 
 -- ================================
 -- Leader mapping

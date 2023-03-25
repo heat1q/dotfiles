@@ -11,15 +11,15 @@ elif [[ "$1" == "get" ]]; then
     cp ~/.tmux.conf tmux/.tmux.conf
     cp ~/.config/nvim/init.vim nvim/init.vim
 elif [[ "$1" == "cp" ]]; then
-    if [[ -f "~/.config/i3" ]]; then
+	if [[ -d "$HOME/.config/i3" ]]; then
         mv ~/.config/i3 ~/.config/i3.backup
-        cp ./i3 ~/.config/
-    fi
+        cp -r ./i3 ~/.config/
+	fi
 
-    if [[ -f "~/.config/alacritty" ]]; then
+	if [[ -d "$HOME/.config/alacritty" ]]; then
         mv ~/.config/alacritty ~/.config/alacritty.backup
-        cp ./alacritty ~/.config/
-    fi
+        cp -r ./alacritty ~/.config/
+	fi
 
     mv ~/.tmux.conf ~/.tmux.conf.backup 
     cp ./tmux/.tmux.conf ~/.tmux.conf
