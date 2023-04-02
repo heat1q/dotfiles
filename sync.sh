@@ -12,12 +12,14 @@ elif [[ "$1" == "get" ]]; then
     cp ~/.config/nvim/init.vim nvim/init.vim
 elif [[ "$1" == "cp" ]]; then
 	if [[ -d "$HOME/.config/i3" ]]; then
-        mv ~/.config/i3 ~/.config/i3.backup
+		rm -r ~/.config/i3.backup/
+        mv ~/.config/i3 ~/.config/i3.backup/
         cp -r ./i3 ~/.config/
 	fi
 
 	if [[ -d "$HOME/.config/alacritty" ]]; then
-        mv ~/.config/alacritty ~/.config/alacritty.backup
+		rm -r ~/.config/alacritty.backup/
+        mv ~/.config/alacritty ~/.config/alacritty.backup/
         cp -r ./alacritty ~/.config/
 	fi
 

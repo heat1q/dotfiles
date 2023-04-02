@@ -1,14 +1,14 @@
 [theme]
-name = "nord-dark"
+theme = "nord-dark"
 [icons]
-name = "awesome"
+icons = "awesome6"
 
 [[block]]
 block = "custom"
 cycle = [
-    "brightnessctl set 5% >> /dev/null && echo '{\"icon\": \"backlight_1\", \"text\": \"5%\"}'", 
-    "brightnessctl set 50% >> /dev/null && echo '{\"icon\": \"backlight_7\", \"text\": \"50%\"}'", 
-    "brightnessctl set 100% >> /dev/null && echo '{\"icon\": \"backlight_full\", \"text\": \"100%\"}'", 
+    "brightnessctl set 5% >> /dev/null && echo '{\"icon\": \"backlight\", \"text\": \"5%\"}'", 
+    "brightnessctl set 50% >> /dev/null && echo '{\"icon\": \"backlight\", \"text\": \"50%\"}'", 
+    "brightnessctl set 100% >> /dev/null && echo '{\"icon\": \"backlight\", \"text\": \"100%\"}'", 
 ]
 interval = "once"
 json = true
@@ -23,37 +23,46 @@ interval = "once"
 json = true
 
 [[block]]
-block = "battery"
-interval = 10
-format = "{percentage} {time}"
-
-[[block]]
-block = "networkmanager"
-on_click = "alacritty -e nmtui"
-interface_name_exclude = ['br\-[0-9a-f]{12}', 'docker\d+']
-interface_name_include = []
-
-[[block]]
-block = "bluetooth"
-mac = "88:D0:39:A7:27:16"
-hide_disconnected = true
-
-[[block]]
-block = "sound"
-on_click = "pavucontrol"
-format = "{volume}"
-headphones_indicator = true
-
-[[block]]
 block = "custom"
 cycle = [
-    "setxkbmap -layout de && echo '{\"icon\": \"keyboard\", \"text\": \"DE\"}'", 
-    "setxkbmap -layout us && echo '{\"icon\": \"keyboard\", \"text\": \"US\"}'", 
+	"setxkbmap -layout de && echo '{\"icon\": \"keyboard\", \"text\": \"DE\"}'", 
+	"setxkbmap -layout us && echo '{\"icon\": \"keyboard\", \"text\": \"US\"}'", 
 ]
 interval = "once"
 json = true
 
 [[block]]
+block = "net"
+#on_click = "alacritty -e nmtui"
+#interface_name_exclude = ['br\-[0-9a-f]{12}', 'docker\d+']
+#interface_name_include = []
+[[block.click]]
+button = "left"
+cmd = "alacritty -e nmtui"
+
+[[block]]
+block = "bluetooth"
+mac = "88:D0:39:A7:27:16"
+
+[[block]]
+block = "sound"
+#format = " $icon $volume "
+headphones_indicator = true
+show_volume_when_muted = true
+[[block.click]]
+button = "left"
+cmd = "pavucontrol"
+
+
+[[block]]
+block = "battery"
+format = " $icon $percentage {$time |}"
+full_format = " $icon $percentage {$time |}"
+empty_format = " $icon $percentage {$time |}"
+
+[[block]]
 block = "time"
-format = "%a %d/%m %R"
 interval = 60
+#[block.format]
+#full = " $icon $timestamp.datetime(f:'%a %Y-%m-%d %R %Z', l:fr_BE) "
+#short = " $icon $timestamp.datetime(f:%R) "
