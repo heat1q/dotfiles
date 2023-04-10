@@ -25,6 +25,11 @@ elif [[ "$1" == "cp" ]]; then
 
     mv ~/.tmux.conf ~/.tmux.conf.backup 
     cp ./tmux/.tmux.conf ~/.tmux.conf
+	if [[ -d "$HOME/.config/tmux" ]]; then
+		rm -r ~/.config/tmux.backup/
+        mv ~/.config/tmux ~/.config/tmux.backup/
+        cp -r ./tmux/config ~/.config/tmux
+	fi
 
 	rm -r ~/.config/nvim.backup || true
     mv ~/.config/nvim ~/.config/nvim.backup
