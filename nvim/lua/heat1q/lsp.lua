@@ -22,7 +22,7 @@ cmp.setup({
     },
     mapping = {
         -- Add tab support
-        ["<C-d>"] = cmp.mapping.scroll_docs( -4),
+        ["<C-d>"] = cmp.mapping.scroll_docs(-4),
         ["<C-f>"] = cmp.mapping.scroll_docs(4),
         ["<C-Space>"] = cmp.mapping.complete(),
         ["<C-e>"] = cmp.mapping.close(),
@@ -43,12 +43,11 @@ cmp.setup({
                 fallback()
             end
         end, { "i", "s" }),
-
         ["<S-Tab>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
                 cmp.select_prev_item()
-            elseif luasnip.jumpable( -1) then
-                luasnip.jump( -1)
+            elseif luasnip.jumpable(-1) then
+                luasnip.jump(-1)
             else
                 fallback()
             end
@@ -131,10 +130,11 @@ local on_attach = function(client, bufnr)
     buf_set_keymap("n", "gy", "<cmd>lua vim.lsp.buf.type_definition()<CR>", opts)
     buf_set_keymap("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<cr>", opts)
     buf_set_keymap("n", "gr", "<cmd>lua vim.lsp.buf.references()<cr>", opts)
+    buf_set_keymap("n", "gg", "<cmd>lua vim.lsp.buf.code_action()<cr>", opts)
     buf_set_keymap("n", "<leader>lr", "<cmd>lua vim.lsp.buf.rename()<CR>", opts)
     buf_set_keymap("n", "<leader>k", "<cmd>lua vim.diagnostic.open_float()<CR>", opts)
-    buf_set_keymap("n", "gp", "<cmd>lua vim.diagnostic.goto_prev()<CR>", opts)
     buf_set_keymap("n", "gn", "<cmd>lua vim.diagnostic.goto_next()<CR>", opts)
+    buf_set_keymap("n", "gN", "<cmd>lua vim.diagnostic.goto_prev()<CR>", opts)
     buf_set_keymap("n", "<C-space>", "<cmd>lua vim.lsp.buf.hover()<CR>", opts)
 
     if client.supports_method("textDocument/formatting") then
@@ -221,15 +221,15 @@ rt.setup({
 
 require("go").setup({
     goimport = "goimports", -- goimport command
-    gofmt = "gofumpt", --gofmt cmd,
-    max_line_len = 120, -- max line length in goline format
+    gofmt = "gofumpt",   --gofmt cmd,
+    max_line_len = 120,  -- max line length in goline format
     tag_transform = false, -- tag_transfer  check gomodifytags for details
-    verbose = true, -- output loginf in messages
+    verbose = true,      -- output loginf in messages
     log_path = vim.fn.expand("$HOME") .. "/gonvim.log",
     lsp_cfg = {
         capabilities = capabilities,
-    }, -- true: apply go.nvim non-default gopls setup
-    lsp_gofumpt = false, -- true: set default gofmt in gopls format to gofumpt
+    },                      -- true: apply go.nvim non-default gopls setup
+    lsp_gofumpt = false,    -- true: set default gofmt in gopls format to gofumpt
     lsp_on_attach = on_attach, -- if a on_attach function provided:  attach on_attach function to gopls
     -- true: will use go.nvim on_attach if true
     -- nil/false do nothing
@@ -239,10 +239,10 @@ require("go").setup({
     -- gopls_cmd = nil,
     -- if you need to specify gopls path and cmd, e.g {"/home/user/lsp/gopls", "-logfile", "/var/log/gopls.log" }
     lsp_diag_hdlr = true, -- hook lsp diag handler
-    dap_debug = true, -- set to true to enable dap
+    dap_debug = true,     -- set to true to enable dap
     dap_debug_keymap = true, -- set keymaps for debugger
     dap_debug_gui = true, -- set to true to enable dap gui, highly recommand
-    dap_debug_vt = true, -- set to true to enable dap virtual text
+    dap_debug_vt = true,  -- set to true to enable dap virtual text
     build_tags = "unit,integration",
     test_runner = "richgo", -- richgo, go test, richgo, dlv, ginkgo
     verbose_tests = true, -- set to add verbose flag to tests
