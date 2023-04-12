@@ -26,12 +26,17 @@ vim.keymap.set({ "n", "x" }, " ", "<nop>")
 vim.g.mapleader = " "
 
 -- Find files using Telescope command-line sugar.
-vim.keymap.set("n", "<leader>f", "<cmd>Telescope find_files<cr>")
-vim.keymap.set("n", "<leader>g", "<cmd>Telescope git_files<cr>")
-vim.keymap.set("n", "<leader>b", "<cmd>Telescope buffers<cr>")
-vim.keymap.set("n", "<leader>fg", "<cmd>Telescope live_grep<cr>")
-vim.keymap.set("n", "<leader>fh", "<cmd>Telescope help_tags<cr>")
+vim.keymap.set("n", "<leader>ff", "<cmd>Telescope find_files<cr>")
+vim.keymap.set("n", "<leader>fg", "<cmd>Telescope git_files<cr>")
+vim.keymap.set("n", "<leader>fb", "<cmd>Telescope buffers<cr>")
+vim.keymap.set("n", "<leader>ffg", "<cmd>Telescope live_grep<cr>")
+--vim.keymap.set("n", "<leader>fh", "<cmd>Telescope help_tags<cr>")
 
 -- Toggle tree and find file
 vim.keymap.set("n", "<leader>t", "<cmd>NvimTreeToggle<cr>")
 vim.keymap.set("n", "<leader>r", "<cmd>NvimTreeFindFile<cr>")
+
+vim.keymap.set("n", "<leader>gs", vim.cmd.Git)
+vim.keymap.set("n", "<leader>gv", "<cmd>Gvdiffsplit!<cr>")
+vim.keymap.set("n", "<leader>gh", "<cmd>diffget //2<cr>")
+vim.keymap.set("n", "<leader>gl", "<cmd>diffget //3<cr>")

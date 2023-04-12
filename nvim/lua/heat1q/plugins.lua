@@ -27,6 +27,7 @@ require("packer").startup(function(use)
     use("windwp/nvim-autopairs")
     use("lukas-reineke/indent-blankline.nvim")
     use("windwp/nvim-ts-autotag")
+    use("tpope/vim-fugitive")
     use({
         "nvim-tree/nvim-tree.lua",
         requires = {
