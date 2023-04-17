@@ -9,8 +9,6 @@ vim.keymap.set("n", "gb", "<cmd>Gitsigns blame_line<cr>")
 -- buffers
 vim.keymap.set("n", "<S-tab>", "<cmd>BufferPrevious<cr>")
 vim.keymap.set("n", "<tab>", "<cmd>BufferNext<cr>")
-vim.keymap.set("n", "<c-q>", "<cmd>BufferClose<cr>")
-vim.keymap.set("n", "<c-Q>", "<cmd>BufferCloseAllButCurrent<cr>")
 
 -- Exit insert mode and save just by hitting CTRL-s
 vim.keymap.set("i", "<c-s>", "<esc>:w<cr>")
@@ -40,3 +38,7 @@ vim.keymap.set("n", "<leader>gs", vim.cmd.Git)
 vim.keymap.set("n", "<leader>gv", "<cmd>Gvdiffsplit!<cr>")
 vim.keymap.set("n", "<leader>gh", "<cmd>diffget //2<cr>")
 vim.keymap.set("n", "<leader>gl", "<cmd>diffget //3<cr>")
+
+-- buffers
+vim.keymap.set("n", "<leader>q", "<cmd>BufferClose<cr>")
+vim.keymap.set("n", "<leader>w", "<cmd>BufferCloseAllButCurrent<cr>")
