@@ -1,3 +1,4 @@
+vim.opt.swapfile = false
 vim.opt.scrolloff = 8
 vim.opt.scrolljump = 1
 vim.opt.mouse = ""

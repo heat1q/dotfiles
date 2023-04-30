@@ -42,3 +42,6 @@ vim.keymap.set("n", "<leader>gl", "<cmd>diffget //3<cr>")
 -- buffers
 vim.keymap.set("n", "<leader>q", "<cmd>BufferClose<cr>")
 vim.keymap.set("n", "<leader>w", "<cmd>BufferCloseAllButCurrent<cr>")
+
+-- copy to os clipboard
+vim.keymap.set({ "n", "v" }, "<leader>y", '"+y')
