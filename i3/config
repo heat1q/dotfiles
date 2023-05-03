@@ -26,9 +26,9 @@ exec --no-startup-id dex --autostart --environment i3
 # The combination of xss-lock, nm-applet and pactl is a popular choice, so
 # they are included here as an example. Modify as you see fit.
 
-# xss-lock grabs a logind suspend inhibit lock and will use i3lock to lock the
+# xss-lock grabs a logind suspend inhibit lock and will use lightdm to lock the
 # screen before suspend. Use loginctl lock-session to lock your screen.
-exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
+exec --no-startup-id xss-lock --transfer-sleep-lock -- dm-tool lock
 
 # NetworkManager is the most popular way to manage wireless networks on Linux,
 # and nm-applet is a desktop environment-independent system tray GUI for it.
@@ -151,8 +151,8 @@ bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
-# lock screen
-bindsym $mod+q exec "~/.config/i3/i3lock/lock.sh"
+# lock screen with lightdm
+bindsym $mod+q exec "dm-tool lock"
 
 # alt+shift+$num to change keyboard layout
 bindsym Mod1+Shift+1 exec "setxkbmap -layout us"
