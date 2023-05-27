@@ -33,12 +33,6 @@ vim.keymap.set("n", "<leader>ffg", "<cmd>Telescope live_grep<cr>")
 -- Toggle tree and find file
 vim.keymap.set("n", "<leader>t", "<cmd>NvimTreeToggle<cr>")
 vim.keymap.set("n", "<leader>r", "<cmd>NvimTreeFindFile<cr>")
-vim.keymap.set(
-    "n",
-    "u",
-    require("nvim-tree.api").tree.change_root_to_parent,
-    { noremap = true, silent = true, nowait = true }
-)
 
 vim.keymap.set("n", "<leader>gs", vim.cmd.Git)
 vim.keymap.set("n", "<leader>gv", "<cmd>Gvdiffsplit!<cr>")
