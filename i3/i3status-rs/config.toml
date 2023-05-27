@@ -25,10 +25,10 @@ json = true
 [[block]]
 block = "custom"
 cycle = [
-	"setxkbmap -layout de && echo '{\"icon\": \"keyboard\", \"text\": \"DE\"}'", 
 	"setxkbmap -layout us && echo '{\"icon\": \"keyboard\", \"text\": \"US\"}'", 
+	"setxkbmap -layout de && echo '{\"icon\": \"keyboard\", \"text\": \"DE\"}'", 
 ]
-interval = "once"
+#interval = "once"
 json = true
 
 [[block]]
