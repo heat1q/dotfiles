@@ -7,8 +7,7 @@ vim.keymap.set("n", "gH", "<cmd>Gitsigns reset_hunk<cr>")
 vim.keymap.set("n", "gb", "<cmd>Gitsigns blame_line<cr>")
 
 -- buffers
-vim.keymap.set("n", "<S-tab>", "<cmd>BufferPrevious<cr>")
-vim.keymap.set("n", "<tab>", "<cmd>BufferNext<cr>")
+vim.keymap.set("n", "<S-tab>", "<cmd>BufferNext<cr>")
 
 -- Exit insert mode and save just by hitting CTRL-s
 vim.keymap.set("i", "<c-s>", "<esc>:w<cr>")
