@@ -7,7 +7,7 @@ vim.keymap.set("n", "gH", "<cmd>Gitsigns reset_hunk<cr>")
 vim.keymap.set("n", "gb", "<cmd>Gitsigns blame_line<cr>")
 
 -- buffers
-vim.keymap.set("n", "<S-tab>", "<cmd>BufferNext<cr>")
+--vim.keymap.set("n", "<S-tab>", "<cmd>BufferNext<cr>")
 
 -- Exit insert mode and save just by hitting CTRL-s
 vim.keymap.set("i", "<c-s>", "<esc>:w<cr>")
@@ -39,8 +39,17 @@ vim.keymap.set("n", "<leader>gh", "<cmd>diffget //2<cr>")
 vim.keymap.set("n", "<leader>gl", "<cmd>diffget //3<cr>")
 
 -- buffers
-vim.keymap.set("n", "<leader>q", "<cmd>BufferClose<cr>")
-vim.keymap.set("n", "<leader>w", "<cmd>BufferCloseAllButCurrent<cr>")
+vim.keymap.set("n", "<leader>qb", ":bd<cr>")
+vim.keymap.set("n", "<leader>wb", ":%bd|e#|bd#<cr>")
 
 -- copy to os clipboard
 vim.keymap.set({ "n", "v" }, "<leader>y", '"+y')
+
+-- harpoon
+local harpoon_mark = require("harpoon.mark")
+local harpoon_ui = require("harpoon.ui")
+vim.keymap.set("n", "<leader>a", harpoon_mark.add_file)
+vim.keymap.set("n", "<leader>qh", harpoon_mark.clear_all)
+vim.keymap.set("n", "<leader>fh", harpoon_ui.toggle_quick_menu)
+vim.keymap.set("n", "<c-h>", harpoon_ui.nav_prev)
+vim.keymap.set("n", "<c-l>", harpoon_ui.nav_next)

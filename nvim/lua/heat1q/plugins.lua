@@ -13,7 +13,7 @@ require("packer").startup(function(use)
     use("nvim-lua/plenary.nvim")
     use("nvim-telescope/telescope.nvim") -- Fuzzy finder; requires fzf, ripgrep installed
     use("preservim/nerdcommenter")
-    use("romgrk/barbar.nvim")
+    --use("romgrk/barbar.nvim")
     use("ray-x/lsp_signature.nvim")
     use("ray-x/go.nvim")
     use("ray-x/guihua.lua")
@@ -28,6 +28,7 @@ require("packer").startup(function(use)
     use("lukas-reineke/indent-blankline.nvim")
     use("windwp/nvim-ts-autotag")
     use("tpope/vim-fugitive")
+    use("ThePrimeagen/harpoon")
     use({
         "nvim-tree/nvim-tree.lua",
         requires = {
@@ -52,13 +53,7 @@ require("packer").startup(function(use)
     })
 
     -- Themes
-    use("ayu-theme/ayu-vim") -- color theme
     use("rebelot/kanagawa.nvim")
-
-    -- VS code Snippets
-    --use 'golang/vscode-go'
-    --use 'rust-lang/vscode-rust'
-    --use 'xabikos/vscode-javascript'
 end)
 
 require("nvim-treesitter.configs").setup({
@@ -121,3 +116,5 @@ require("nvim-autopairs").setup()
 require("nvim-ts-autotag").setup()
 
 require("luasnip.loaders.from_vscode").lazy_load()
+
+require("harpoon").setup()
