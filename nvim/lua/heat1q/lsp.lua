@@ -301,6 +301,11 @@ nvim_lsp.lua_ls.setup({
     },
 })
 
+nvim_lsp.clangd.setup({
+    on_attach = on_attach,
+    capabilities = capabilities,
+})
+
 require("prettier").setup({
     bin = "prettier", -- or `'prettierd'` (v0.22+)
     filetypes = {

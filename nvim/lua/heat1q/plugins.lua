@@ -61,6 +61,7 @@ require("nvim-treesitter.configs").setup({
     ensure_installed = {
         "go",
         "rust",
+        "c",
         "javascript",
         "typescript",
         "python",
