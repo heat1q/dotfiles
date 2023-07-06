@@ -205,3 +205,6 @@ bar {
 
 # Remove window borders and titles
 for_window [class="^.*"] border pixel 0
+
+# take screenshots
+bindsym $mod+Shift+p exec flameshot gui
