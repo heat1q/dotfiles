@@ -222,14 +222,21 @@ rt.setup({
 require("go").setup({
     goimport = "goimports", -- goimport command
     gofmt = "gofumpt",   --gofmt cmd,
-    max_line_len = 120,  -- max line length in goline format
+    max_line_len = 80,  -- max line length in goline format
     tag_transform = false, -- tag_transfer  check gomodifytags for details
     verbose = true,      -- output loginf in messages
     log_path = vim.fn.expand("$HOME") .. "/gonvim.log",
     lsp_cfg = {
         capabilities = capabilities,
+        settings = {
+            gopls = {
+                analyses = {
+                    ST1003 = false,
+                },
+            },
+        },
     },                      -- true: apply go.nvim non-default gopls setup
-    lsp_gofumpt = false,    -- true: set default gofmt in gopls format to gofumpt
+    lsp_gofumpt = true,    -- true: set default gofmt in gopls format to gofumpt
     lsp_on_attach = on_attach, -- if a on_attach function provided:  attach on_attach function to gopls
     -- true: will use go.nvim on_attach if true
     -- nil/false do nothing
