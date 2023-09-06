@@ -114,6 +114,7 @@ local async = event == "BufWritePost"
 local null_ls_sources = {
     null_ls.builtins.formatting.pg_format,
     null_ls.builtins.formatting.stylua,
+    null_ls.builtins.formatting.ocamlformat
 }
 
 local on_attach = function(client, bufnr)
@@ -309,6 +310,11 @@ nvim_lsp.lua_ls.setup({
 })
 
 nvim_lsp.clangd.setup({
+    on_attach = on_attach,
+    capabilities = capabilities,
+})
+
+nvim_lsp.ocamllsp.setup({
     on_attach = on_attach,
     capabilities = capabilities,
 })
