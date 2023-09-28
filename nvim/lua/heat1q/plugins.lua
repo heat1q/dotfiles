@@ -3,8 +3,8 @@ require("packer").startup(function(use)
     use("wbthomason/packer.nvim")
 
     use("neovim/nvim-lspconfig") -- Collection of common configurations for the Nvim LSP client
-    use("hrsh7th/nvim-cmp")   -- Completion framework
-    use("hrsh7th/cmp-nvim-lsp") -- LSP completion source for nvim-cmp
+    use("hrsh7th/nvim-cmp")      -- Completion framework
+    use("hrsh7th/cmp-nvim-lsp")  -- LSP completion source for nvim-cmp
     --use 'hrsh7th/cmp-vsnip' -- Snippet completion source for nvim-cmp
     use("hrsh7th/cmp-path")
     use("hrsh7th/cmp-buffer") -- Other usefull completion sources
@@ -25,7 +25,7 @@ require("packer").startup(function(use)
     use("lewis6991/gitsigns.nvim")
     use("nvim-lualine/lualine.nvim")
     use("windwp/nvim-autopairs")
-    use("lukas-reineke/indent-blankline.nvim")
+    use({ "lukas-reineke/indent-blankline.nvim", tag = "v2.20.8" })
     use("windwp/nvim-ts-autotag")
     use("tpope/vim-fugitive")
     use("ThePrimeagen/harpoon")
@@ -51,6 +51,7 @@ require("packer").startup(function(use)
             "saadparwaiz1/cmp_luasnip",
         },
     })
+    use("frabjous/knap")
 
     -- Themes
     use("rebelot/kanagawa.nvim")
@@ -119,3 +120,19 @@ require("nvim-ts-autotag").setup()
 require("luasnip.loaders.from_vscode").lazy_load()
 
 require("harpoon").setup()
+
+local setup_knap = function()
+    local gknapsettings = {
+        texoutputext = "pdf",
+        textopdf = "xelatex -synctex=1 -halt-on-error -interaction=batchmode %docroot%",
+        textopdfviewerlaunch = "mupdf %outputfile%",
+        textopdfviewerrefresh = "kill -HUP %pid%",
+        textopdfforwardjump = "false",
+        mdtopdfviewerlaunch = "mupdf %outputfile%",
+        mdtopdfviewerrefresh = "kill -HUP %pid%",
+        markdowntopdfviewerlaunch = "mupdf %outputfile%",
+        markdowntopdfviewerrefresh = "kill -HUP %pid%",
+    }
+    vim.g.knap_settings = gknapsettings
+end
+setup_knap()
