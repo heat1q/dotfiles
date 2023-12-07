@@ -5,9 +5,8 @@ require("packer").startup(function(use)
     use("neovim/nvim-lspconfig") -- Collection of common configurations for the Nvim LSP client
     use("hrsh7th/nvim-cmp")      -- Completion framework
     use("hrsh7th/cmp-nvim-lsp")  -- LSP completion source for nvim-cmp
-    --use 'hrsh7th/cmp-vsnip' -- Snippet completion source for nvim-cmp
     use("hrsh7th/cmp-path")
-    use("hrsh7th/cmp-buffer") -- Other usefull completion sources
+    --use("hrsh7th/cmp-buffer") -- Other usefull completion sources
     use("simrat39/rust-tools.nvim")
     use("nvim-lua/popup.nvim")
     use("nvim-lua/plenary.nvim")
@@ -21,7 +20,7 @@ require("packer").startup(function(use)
     use("rcarriga/nvim-dap-ui")
     use("theHamsta/nvim-dap-virtual-text")
     use("MunifTanjim/prettier.nvim")
-    use("jose-elias-alvarez/null-ls.nvim")
+    use("nvimtools/none-ls.nvim")
     use("lewis6991/gitsigns.nvim")
     use("nvim-lualine/lualine.nvim")
     use("windwp/nvim-autopairs")

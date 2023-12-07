@@ -25,7 +25,7 @@ cmp.setup({
         ["<C-d>"] = cmp.mapping.scroll_docs(-4),
         ["<C-f>"] = cmp.mapping.scroll_docs(4),
         ["<C-Space>"] = cmp.mapping.complete(),
-        ["<C-e>"] = cmp.mapping.close(),
+        ["<C-e>"] = cmp.mapping.abort(),
         ["<CR>"] = cmp.mapping.confirm({
             behavior = cmp.ConfirmBehavior.Insert,
             select = true,
@@ -57,7 +57,7 @@ cmp.setup({
     sources = {
         { name = "nvim_lsp" },
         { name = "path" },
-        { name = "buffer" },
+        --{ name = "buffer" },
         { name = "luasnip", option = { use_show_condition = false } },
     },
 })

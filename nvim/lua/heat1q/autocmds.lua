@@ -18,7 +18,7 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 vim.api.nvim_create_autocmd("FileType", {
-    pattern = "terraform,lua",
+    pattern = "terraform,lua,ocaml",
     callback = function()
         vim.opt.expandtab = true
         vim.opt.tabstop = 2
