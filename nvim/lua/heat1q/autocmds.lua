@@ -2,7 +2,7 @@
 -- FileType and Tabs
 -- ================================
 vim.api.nvim_create_autocmd("FileType", {
-    pattern = "rust,javascript,javascriptreact,typescript,typescriptreact,python",
+    pattern = "rust,javascript,javascriptreact,typescript,typescriptreact,python,json",
     callback = function()
         vim.opt.expandtab = true
         vim.opt.tabstop = 4
@@ -18,7 +18,7 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 vim.api.nvim_create_autocmd("FileType", {
-    pattern = "terraform,lua,ocaml",
+    pattern = "terraform,lua,ocaml,yaml",
     callback = function()
         vim.opt.expandtab = true
         vim.opt.tabstop = 2

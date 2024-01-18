@@ -340,7 +340,6 @@ require("prettier").setup({
         "scss",
         "typescript",
         "typescriptreact",
-        "yaml",
     },
 })
 
