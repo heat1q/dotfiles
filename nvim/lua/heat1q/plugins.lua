@@ -12,7 +12,7 @@ require("packer").startup(function(use)
     use("nvim-lua/plenary.nvim")
     use("nvim-telescope/telescope.nvim") -- Fuzzy finder; requires fzf, ripgrep installed
     use("preservim/nerdcommenter")
-    --use("romgrk/barbar.nvim")
+    use("mbbill/undotree")
     use("ray-x/lsp_signature.nvim")
     use("ray-x/go.nvim")
     use("ray-x/guihua.lua")
@@ -51,6 +51,12 @@ require("packer").startup(function(use)
         },
     })
     use("frabjous/knap")
+    use({
+        "Saecki/crates.nvim", 
+        config = function()
+            require('crates').setup()
+        end,
+    })
 
     -- Themes
     use("rebelot/kanagawa.nvim")

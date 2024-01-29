@@ -53,3 +53,6 @@ vim.keymap.set("n", "<leader>qh", harpoon_mark.clear_all)
 vim.keymap.set("n", "<leader>fh", harpoon_ui.toggle_quick_menu)
 vim.keymap.set("n", "<c-h>", harpoon_ui.nav_prev)
 vim.keymap.set("n", "<c-l>", harpoon_ui.nav_next)
+
+-- undotree
+vim.keymap.set("n", "<leader>u", vim.cmd.UndotreeToggle)
