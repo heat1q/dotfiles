@@ -50,7 +50,6 @@ require("packer").startup(function(use)
             "saadparwaiz1/cmp_luasnip",
         },
     })
-    use("frabjous/knap")
     use({
         "Saecki/crates.nvim", 
         config = function()
@@ -125,19 +124,3 @@ require("nvim-ts-autotag").setup()
 require("luasnip.loaders.from_vscode").lazy_load()
 
 require("harpoon").setup()
-
-local setup_knap = function()
-    local gknapsettings = {
-        texoutputext = "pdf",
-        textopdf = "xelatex -synctex=1 -halt-on-error -interaction=batchmode %docroot%",
-        textopdfviewerlaunch = "mupdf %outputfile%",
-        textopdfviewerrefresh = "kill -HUP %pid%",
-        textopdfforwardjump = "false",
-        mdtopdfviewerlaunch = "mupdf %outputfile%",
-        mdtopdfviewerrefresh = "kill -HUP %pid%",
-        markdowntopdfviewerlaunch = "mupdf %outputfile%",
-        markdowntopdfviewerrefresh = "kill -HUP %pid%",
-    }
-    vim.g.knap_settings = gknapsettings
-end
-setup_knap()
