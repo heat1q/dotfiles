@@ -1,0 +1,50 @@
+#!/usr/bin/env zsh
+
+cmd=$1
+
+append_zshrc () {
+    local rc_file="$HOME/.zshrc"
+    local line=$1
+
+    found=$(cat "$rc_file" | grep "$line")
+    if [[ -z "$found" ]]; then
+        echo -e "\n$line" >> "$rc_file"
+    fi
+}
+
+copy_and_backup () {
+    local src=$1
+    local dest="$HOME/$2"
+    local backup="$dest.backup"
+
+    if [[ -d "$backup" ]]; then
+        rm -r $backup || true
+    fi
+    if [[ -d "$dest" || -f "$dest" ]]; then
+        mv $dest $backup
+        echo "Backup $dest to $backup"
+    fi
+    cp -r "$src" "$dest"
+    echo "Updated $dest"
+}
+
+if [[ "$cmd" == "diff" ]]; then
+    diff -ruN --color=always ~/.tmux.conf tmux/.tmux.conf
+    diff -ruN --color=always ~/.config/nvim/init.vim nvim/init.vim
+elif [[ "$cmd" == "get" ]]; then
+    cp -r ~/.config/i3 .
+    cp -r ~/.config/alacritty .
+    cp ~/.tmux.conf tmux/.tmux.conf
+    cp ~/.config/nvim/init.vim nvim/init.vim
+elif [[ "$cmd" == "cp" ]]; then
+    copy_and_backup "nvim" ".config/nvim"
+    copy_and_backup "i3" ".config/i3"
+    copy_and_backup "alacritty" ".config/alacritty"
+    copy_and_backup "tmux/.tmux.conf" ".tmux.conf"
+    copy_and_backup "tmux/config" ".config/tmux"
+    copy_and_backup "bin" ".local/bin"
+
+    append_zshrc "export PATH=\$PATH:\$HOME/.local/bin"
+
+    source "$HOME/.zshrc"
+fi
