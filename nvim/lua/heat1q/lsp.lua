@@ -221,9 +221,9 @@ rt.setup({
 })
 
 require("go").setup({
-    goimport = "goimports", -- goimport command
+    goimports = "goimports", -- goimport command
     gofmt = "gofumpt",      --gofmt cmd,
-    max_line_len = 80,      -- max line length in goline format
+    --max_line_len = 80,      -- max line length in goline format
     tag_transform = false,  -- tag_transfer  check gomodifytags for details
     verbose = true,         -- output loginf in messages
     log_path = vim.fn.expand("$HOME") .. "/gonvim.log",

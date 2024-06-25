@@ -24,7 +24,7 @@ require("packer").startup(function(use)
     use("lewis6991/gitsigns.nvim")
     use("nvim-lualine/lualine.nvim")
     use("windwp/nvim-autopairs")
-    use({ "lukas-reineke/indent-blankline.nvim", tag = "v2.20.8" })
+    use("lukas-reineke/indent-blankline.nvim")
     use("windwp/nvim-ts-autotag")
     use("tpope/vim-fugitive")
     use("ThePrimeagen/harpoon")
@@ -50,12 +50,7 @@ require("packer").startup(function(use)
             "saadparwaiz1/cmp_luasnip",
         },
     })
-    use({
-        "Saecki/crates.nvim", 
-        config = function()
-            require('crates').setup()
-        end,
-    })
+    use("saecki/crates.nvim")
 
     -- Themes
     use("rebelot/kanagawa.nvim")
@@ -110,9 +105,9 @@ require("gitsigns").setup({
     current_line_blame = true,
 })
 
-require("indent_blankline").setup({
-    show_current_context = true,
-    show_current_context_start = false,
+require("ibl").setup({
+    indent = { char = "▏" },
+    scope = { enabled = true, show_start = false }
 })
 
 require("lualine").setup()
@@ -124,3 +119,5 @@ require("nvim-ts-autotag").setup()
 require("luasnip.loaders.from_vscode").lazy_load()
 
 require("harpoon").setup()
+
+require('crates').setup()
