@@ -3,11 +3,12 @@ require("packer").startup(function(use)
     use("wbthomason/packer.nvim")
 
     use("neovim/nvim-lspconfig") -- Collection of common configurations for the Nvim LSP client
+    use("onsails/lspkind.nvim")
     use("hrsh7th/nvim-cmp")      -- Completion framework
     use("hrsh7th/cmp-nvim-lsp")  -- LSP completion source for nvim-cmp
     use("hrsh7th/cmp-path")
     --use("hrsh7th/cmp-buffer") -- Other usefull completion sources
-    use("simrat39/rust-tools.nvim")
+    use("mrcjkb/rustaceanvim")
     use("nvim-lua/popup.nvim")
     use("nvim-lua/plenary.nvim")
     use("nvim-telescope/telescope.nvim") -- Fuzzy finder; requires fzf, ripgrep installed

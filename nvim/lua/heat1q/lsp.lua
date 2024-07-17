@@ -1,3 +1,5 @@
+vim.lsp.inlay_hint.enable(true)
+
 local has_words_before = function()
     unpack = unpack or table.unpack
     local line, col = unpack(vim.api.nvim_win_get_cursor(0))
@@ -8,6 +10,7 @@ local luasnip = require("luasnip")
 
 -- Setup Completion
 -- See https://github.com/hrsh7th/nvim-cmp#basic-configuration
+local lspkind = require('lspkind')
 local cmp = require("cmp")
 cmp.setup({
     -- Enable LSP snippets
@@ -15,6 +18,18 @@ cmp.setup({
         expand = function(args)
             require("luasnip").lsp_expand(args.body)
         end,
+    },
+    formatting = {
+        format = lspkind.cmp_format({
+            mode = "symbol_text",
+            menu = ({
+                buffer = "[Buffer]",
+                nvim_lsp = "[LSP]",
+                luasnip = "[LuaSnip]",
+                nvim_lua = "[Lua]",
+                latex_symbols = "[Latex]",
+            })
+        }),
     },
     window = {
         completion = cmp.config.window.bordered(),
@@ -107,10 +122,11 @@ local lsp_formatting_async = function(bufnr)
     })
 end
 
-local null_ls = require("null-ls")
 local group = vim.api.nvim_create_augroup("lsp_format_on_save", { clear = false })
 local event = "BufWritePre" -- or "BufWritePost"
 local async = event == "BufWritePost"
+
+local null_ls = require("null-ls")
 local null_ls_sources = {
     null_ls.builtins.formatting.pg_format,
     null_ls.builtins.formatting.stylua,
@@ -139,10 +155,6 @@ local on_attach = function(client, bufnr)
     buf_set_keymap("n", "<C-space>", "<cmd>lua vim.lsp.buf.hover()<CR>", opts)
 
     if client.supports_method("textDocument/formatting") then
-        --vim.keymap.set("n", "<Leader>f", function()
-        --  vim.lsp.buf.format({ bufnr = vim.api.nvim_get_current_buf() })
-        --end, { buffer = bufnr, desc = "[lsp] format" })
-
         -- format on save
         vim.api.nvim_clear_autocmds({ buffer = bufnr, group = group })
         vim.api.nvim_create_autocmd(event, {
@@ -176,35 +188,17 @@ null_ls.setup({
     on_attach = on_attach,
 })
 
--- Configure LSP through rust-tools.nvim plugin.
--- rust-tools will configure and enable certain LSP features for us.
--- See https://github.com/simrat39/rust-tools.nvim#configuration
-local rt = require("rust-tools")
-rt.setup({
-    tools = {
-        autoSetHints = true,
-        inlay_hints = {
-            show_parameter_hints = false,
-            parameter_hints_prefix = "",
-            other_hints_prefix = "",
-        },
-    },
-    -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#rust_analyzer
+vim.g.rustaceanvim = {
+    -- Plugin configuration
+    tools = {},
+    -- LSP configuration
     server = {
         on_attach = on_attach,
-        settings = {
-            -- https://github.com/rust-analyzer/rust-analyzer/blob/master/docs/user/generated_config.adoc
-            ["rust-analyzer"] = {
+        default_settings = {
+            -- rust-analyzer language server configuration
+            ['rust-analyzer'] = {
                 cargo = {
                     allFeatures = true,
-                },
-                completion = {
-                    autoimport = {
-                        enable = true,
-                    },
-                    postfix = {
-                        enable = false,
-                    },
                 },
                 diagnostics = {
                     disabled = { "macro-error" },
@@ -218,7 +212,7 @@ rt.setup({
             },
         },
     },
-})
+}
 
 require("go").setup({
     goimports = "goimports", -- goimport command
@@ -254,10 +248,9 @@ require("go").setup({
         signs = true,
         update_in_insert = false,
     },
-    dap_debug = true,        -- set to true to enable dap
-    dap_debug_keymap = true, -- set keymaps for debugger
-    dap_debug_gui = true,    -- set to true to enable dap gui, highly recommand
-    dap_debug_vt = true,     -- set to true to enable dap virtual text
+    lsp_inlay_hints = {
+        enable = false,
+    },
     build_tags = "unit,integration",
     test_runner = "richgo",  -- richgo, go test, richgo, dlv, ginkgo
     verbose_tests = true,    -- set to add verbose flag to tests

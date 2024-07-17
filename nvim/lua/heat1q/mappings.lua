@@ -30,8 +30,7 @@ vim.keymap.set("n", "<leader>ffg", "<cmd>Telescope live_grep<cr>")
 --vim.keymap.set("n", "<leader>fh", "<cmd>Telescope help_tags<cr>")
 
 -- Toggle tree and find file
-vim.keymap.set("n", "<leader>t", "<cmd>NvimTreeToggle<cr>")
-vim.keymap.set("n", "<leader>r", "<cmd>NvimTreeFindFile<cr>")
+vim.keymap.set("n", "<leader>t", "<cmd>NvimTreeFindFile<cr>")
 
 vim.keymap.set("n", "<leader>gs", vim.cmd.Git)
 vim.keymap.set("n", "<leader>gv", "<cmd>Gvdiffsplit!<cr>")
@@ -49,7 +48,6 @@ vim.keymap.set({ "n", "v" }, "<leader>y", '"+y')
 local harpoon_mark = require("harpoon.mark")
 local harpoon_ui = require("harpoon.ui")
 vim.keymap.set("n", "<leader>a", harpoon_mark.add_file)
-vim.keymap.set("n", "<leader>qh", harpoon_mark.clear_all)
 vim.keymap.set("n", "<leader>fh", harpoon_ui.toggle_quick_menu)
 vim.keymap.set("n", "<c-h>", harpoon_ui.nav_prev)
 vim.keymap.set("n", "<c-l>", harpoon_ui.nav_next)
@@ -65,3 +63,10 @@ vim.keymap.set("n", "<leader>9", function() harpoon_ui.nav_file(9) end)
 
 -- undotree
 vim.keymap.set("n", "<leader>u", vim.cmd.UndotreeToggle)
+
+-- Rust
+vim.keymap.set("n", "<leader>rr", "<cmd>RustLsp runnables<cr>")
+vim.keymap.set("n", "<leader>rm", "<cmd>RustLsp expandMacro<cr>")
+
+-- toggle inlay hints
+vim.keymap.set("n", "<leader>ii", function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled()) end)
