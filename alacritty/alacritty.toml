@@ -65,3 +65,4 @@ style = "Medium"
 
 [window]
 opacity = 0.85
+blur = true
