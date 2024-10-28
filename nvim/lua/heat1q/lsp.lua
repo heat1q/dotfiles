@@ -216,8 +216,8 @@ vim.g.rustaceanvim = {
 
 require("go").setup({
     goimports = "goimports", -- goimport command
-    gofmt = "gofumpt",      --gofmt cmd,
-    --max_line_len = 80,      -- max line length in goline format
+    gofmt = "golines",      --gofmt cmd,
+    max_line_len = 80,      -- max line length in goline format
     tag_transform = false,  -- tag_transfer  check gomodifytags for details
     verbose = true,         -- output loginf in messages
     log_path = vim.fn.expand("$HOME") .. "/gonvim.log",
@@ -264,7 +264,7 @@ nvim_lsp.pyright.setup({
 })
 
 -- setup ts language server
-nvim_lsp.tsserver.setup({
+nvim_lsp.ts_ls.setup({
     on_attach = on_attach,
     capabilities = capabilities,
     settings = {
