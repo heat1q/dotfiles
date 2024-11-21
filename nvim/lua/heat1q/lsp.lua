@@ -218,7 +218,7 @@ require("go").setup({
     goimports = "goimports", -- goimport command
     gofmt = "golines",      --gofmt cmd,
     max_line_len = 80,      -- max line length in goline format
-    tag_transform = false,  -- tag_transfer  check gomodifytags for details
+    tag_transform = "camelcase",  -- tag_transfer  check gomodifytags for details
     verbose = true,         -- output loginf in messages
     log_path = vim.fn.expand("$HOME") .. "/gonvim.log",
     lsp_cfg = {
@@ -249,7 +249,7 @@ require("go").setup({
         update_in_insert = false,
     },
     lsp_inlay_hints = {
-        enable = false,
+        enable = true,
     },
     build_tags = "unit,integration",
     test_runner = "richgo",  -- richgo, go test, richgo, dlv, ginkgo
