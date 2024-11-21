@@ -109,23 +109,23 @@ export PATH=$PATH:$HOME/.cargo/bin
 
 eval "$(mcfly init zsh)"
 
-if type brew &>/dev/null; then
-     FPATH=$(brew --prefix)/share/zsh-completions:$FPATH
-
-     autoload -Uz compinit
-     compinit
-     
-     source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-fi
-
-source <(kubectl completion zsh)
-
-
-source /Users/patrick/.docker/init-zsh.sh || true # Added by Docker Desktop
-source /Users/patrick/export-esp.sh || true
-
-# opam configuration
-[[ ! -r /Users/patrick/.opam/opam-init/init.zsh ]] || source /Users/patrick/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
+#if type brew &>/dev/null; then
+#     FPATH=$(brew --prefix)/share/zsh-completions:$FPATH
+#
+#     autoload -Uz compinit
+#     compinit
+#     
+#     source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+#fi
+#
+#source <(kubectl completion zsh)
+#
+#
+#source /Users/patrick/.docker/init-zsh.sh || true # Added by Docker Desktop
+#source /Users/patrick/export-esp.sh || true
+#
+## opam configuration
+#[[ ! -r /Users/patrick/.opam/opam-init/init.zsh ]] || source /Users/patrick/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
 
 # kubectl aliases
 alias k=kubectl
