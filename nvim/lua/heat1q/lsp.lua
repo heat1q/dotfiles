@@ -189,6 +189,7 @@ null_ls.setup({
 })
 
 vim.g.rustaceanvim = {
+    test_executor_alias = "neotest",
     -- Plugin configuration
     tools = {},
     -- LSP configuration

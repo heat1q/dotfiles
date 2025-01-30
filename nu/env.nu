@@ -86,6 +86,9 @@ $env.NU_PLUGIN_DIRS = [
     ($nu.default-config-dir | path join 'plugins') # add <nushell-config-dir>/plugins
 ]
 
+$env.GOPATH = ($env.HOME | path join go)
+$env.GPG_TTY = (tty)
+
 # To add entries to PATH (on Windows you might use Path), you can use the following pattern:
 # $env.PATH = ($env.PATH | split row (char esep) | prepend '/some/path')
 # An alternate way to add entries to $env.PATH is to use the custom command `path add`
@@ -103,6 +106,7 @@ $env.PATH = (
   | append ($env.HOME | path join .local bin)
   | append ($env.HOME | path join .cargo bin)
   | append /opt/homebrew/bin
+  | append ($env.GOPATH | path join bin)
   | uniq # filter so the paths are unique
 )
 

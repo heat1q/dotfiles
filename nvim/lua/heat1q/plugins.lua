@@ -52,6 +52,17 @@ require("packer").startup(function(use)
         },
     })
     use("saecki/crates.nvim")
+    use {
+        "nvim-neotest/neotest",
+        requires = {
+            "nvim-neotest/nvim-nio",
+            "nvim-lua/plenary.nvim",
+            "antoinemadec/FixCursorHold.nvim",
+            "nvim-treesitter/nvim-treesitter"
+        }
+    }
+
+    use("github/copilot.vim")
 
     -- Themes
     use("rebelot/kanagawa.nvim")
@@ -121,4 +132,10 @@ require("luasnip.loaders.from_vscode").lazy_load()
 
 require("harpoon").setup()
 
-require('crates').setup()
+require("crates").setup()
+
+require("neotest").setup({
+    adapters = {
+        require('rustaceanvim.neotest')
+    },
+})

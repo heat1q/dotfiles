@@ -68,5 +68,15 @@ vim.keymap.set("n", "<leader>u", vim.cmd.UndotreeToggle)
 vim.keymap.set("n", "<leader>rr", "<cmd>RustLsp runnables<cr>")
 vim.keymap.set("n", "<leader>rm", "<cmd>RustLsp expandMacro<cr>")
 
+-- Go
+vim.keymap.set("n", "<leader>gf", "<cmd>GoTestFunc<cr>")
+
 -- toggle inlay hints
 vim.keymap.set("n", "<leader>ii", function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled()) end)
+
+-- copilot
+vim.keymap.set('i', '<c-y>', 'copilot#Accept("\\<CR>")', {
+  expr = true,
+  replace_keycodes = false
+})
+vim.g.copilot_no_tab_map = true
