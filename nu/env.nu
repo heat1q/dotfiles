@@ -107,6 +107,7 @@ $env.PATH = (
   | append ($env.HOME | path join .cargo bin)
   | append /opt/homebrew/bin
   | append ($env.GOPATH | path join bin)
+  | append /Library/TeX/texbin
   | uniq # filter so the paths are unique
 )
 

@@ -62,7 +62,7 @@ require("packer").startup(function(use)
         }
     }
 
-    use("github/copilot.vim")
+    --use("github/copilot.vim")
 
     -- Themes
     use("rebelot/kanagawa.nvim")
@@ -133,9 +133,3 @@ require("luasnip.loaders.from_vscode").lazy_load()
 require("harpoon").setup()
 
 require("crates").setup()
-
-require("neotest").setup({
-    adapters = {
-        require('rustaceanvim.neotest')
-    },
-})

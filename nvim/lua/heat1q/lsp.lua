@@ -189,7 +189,7 @@ null_ls.setup({
 })
 
 vim.g.rustaceanvim = {
-    test_executor_alias = "neotest",
+    --test_executor_alias = "neotest",
     -- Plugin configuration
     tools = {},
     -- LSP configuration
@@ -351,5 +351,11 @@ nvim_lsp.ltex.setup({
         ltex = {
             language = "en-US",
         },
+    },
+})
+
+require("neotest").setup({
+    adapters = {
+        require('rustaceanvim.neotest')
     },
 })

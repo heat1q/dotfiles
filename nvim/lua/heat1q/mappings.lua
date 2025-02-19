@@ -65,7 +65,7 @@ vim.keymap.set("n", "<leader>9", function() harpoon_ui.nav_file(9) end)
 vim.keymap.set("n", "<leader>u", vim.cmd.UndotreeToggle)
 
 -- Rust
-vim.keymap.set("n", "<leader>rr", "<cmd>RustLsp runnables<cr>")
+vim.keymap.set("n", "<leader>rr", "<cmd>RustLsp testables<cr>")
 vim.keymap.set("n", "<leader>rm", "<cmd>RustLsp expandMacro<cr>")
 
 -- Go
