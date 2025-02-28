@@ -21,6 +21,7 @@ cmp.setup({
     },
     formatting = {
         format = lspkind.cmp_format({
+            before = require("tailwind-tools.cmp").lspkind_format,
             mode = "symbol_text",
             menu = ({
                 buffer = "[Buffer]",
@@ -357,5 +358,12 @@ nvim_lsp.ltex.setup({
 require("neotest").setup({
     adapters = {
         require('rustaceanvim.neotest')
+    },
+})
+
+
+require("tailwind-tools").setup({
+    server = {
+        on_attach = on_attach,
     },
 })

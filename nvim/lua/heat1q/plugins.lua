@@ -61,6 +61,13 @@ require("packer").startup(function(use)
             "nvim-treesitter/nvim-treesitter"
         }
     }
+    use({
+        "luckasRanarison/tailwind-tools.nvim",
+        run = ":UpdateRemotePlugins",
+        requires = {
+            "nvim-treesitter/nvim-treesitter",
+        },
+    })
 
     --use("github/copilot.vim")
 
