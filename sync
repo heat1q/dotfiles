@@ -44,8 +44,8 @@ elif [[ "$cmd" == "cp" ]]; then
     copy_and_backup "tmux/config" ".config/tmux"
     copy_and_backup "bin" ".local/bin"
     copy_and_backup "zsh/.zshrc" ".zshrc"
-    copy_and_backup "nu" ".config/nu"
-    copy_and_backup "nu/starship.toml" ".config/starship.toml"
+    copy_and_backup "fish/config.fish" ".config/fish/config.fish"
+    copy_and_backup "fish/starship.toml" ".config/starship.toml"
 
     #append_zshrc "export PATH=\$PATH:\$HOME/.local/bin"
 

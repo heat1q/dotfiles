@@ -1,6 +1,6 @@
 [terminal.shell]
-program = "/opt/homebrew/bin/nu"
-args = ["--config", "~/.config/nu/config.nu", "--env-config", "~/.config/nu/env.nu"]
+program = "/opt/homebrew/bin/fish"
+args = []
 
 [colors]
 transparent_background_colors = true
