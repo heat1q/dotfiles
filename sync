@@ -1,16 +1,6 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env bash
 
 cmd=$1
-
-append_zshrc () {
-    local rc_file="$HOME/.zshrc"
-    local line=$1
-
-    found=$(cat "$rc_file" | grep "$line")
-    if [[ -z "$found" ]]; then
-        echo -e "\n$line" >> "$rc_file"
-    fi
-}
 
 copy_and_backup () {
     local src=$1
@@ -43,11 +33,8 @@ elif [[ "$cmd" == "cp" ]]; then
     copy_and_backup "tmux/.tmux.conf" ".tmux.conf"
     copy_and_backup "tmux/config" ".config/tmux"
     copy_and_backup "bin" ".local/bin"
-    copy_and_backup "zsh/.zshrc" ".zshrc"
     copy_and_backup "fish/config.fish" ".config/fish/config.fish"
     copy_and_backup "fish/starship.toml" ".config/starship.toml"
-
-    #append_zshrc "export PATH=\$PATH:\$HOME/.local/bin"
-
-    source "$HOME/.zshrc"
+    copy_and_backup "git/.gitconfig" ".gitconfig"
+    copy_and_backup "git/.gitconfig_quartett" ".gitconfig_quartett"
 fi
