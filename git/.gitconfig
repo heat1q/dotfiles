@@ -1,6 +1,6 @@
 [user]
 	name = Patrick Willner
-	email = 50421879+heat1q@users.noreply.github.com
+	email = dev@willner.online
 [core]
 	editor = nvim
 [filter "lfs"]

@@ -6,6 +6,6 @@ end
 
 set -x GOPATH ~/go
 
-fish_add_path /opt/homebrew/bin /opt/homebrew/sbin ~/.cargo/bin ~/go/bin ~/.local/bin /usr/local/bin
+fish_add_path /opt/homebrew/bin /opt/homebrew/sbin ~/.cargo/bin ~/go/bin ~/.local/bin /usr/local/bin /Library/TeX/texbin
 
 starship init fish | source

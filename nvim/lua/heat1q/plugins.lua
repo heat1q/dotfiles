@@ -69,8 +69,6 @@ require("packer").startup(function(use)
         },
     })
 
-    --use("github/copilot.vim")
-
     -- Themes
     use("rebelot/kanagawa.nvim")
 end)
