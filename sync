@@ -37,4 +37,5 @@ elif [[ "$cmd" == "cp" ]]; then
     copy_and_backup "fish/starship.toml" ".config/starship.toml"
     copy_and_backup "git/.gitconfig" ".gitconfig"
     copy_and_backup "git/.gitconfig_quartett" ".gitconfig_quartett"
+    copy_and_backup "aerospace/.aerospace.toml" ".aerospace.toml"
 fi
