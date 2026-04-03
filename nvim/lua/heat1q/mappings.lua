@@ -65,7 +65,7 @@ vim.keymap.set("n", "<leader>8", function() harpoon_ui.nav_file(8) end)
 vim.keymap.set("n", "<leader>9", function() harpoon_ui.nav_file(9) end)
 
 -- undotree
-vim.keymap.set("n", "<leader>u", vim.cmd.UndotreeToggle)
+vim.keymap.set("n", "<leader>u", vim.cmd.Undotree)
 
 -- Rust
 vim.keymap.set("n", "<leader>rr", "<cmd>RustLsp testables<CR>")

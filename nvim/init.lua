@@ -17,7 +17,8 @@ vim.opt.tabstop = 4
 -- folds
 -- vim.opt.nofoldenable = true
 vim.opt.foldlevelstart = 99
-vim.opt.foldmethod = "indent"
+vim.opt.foldmethod = "expr"
+vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 
 --vim.opt.completeopt = 'menuone,noinsert,noselect'
 --vim.opt.shortmess += 'c'

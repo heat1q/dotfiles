@@ -21,7 +21,7 @@ cmp.setup({
     },
     formatting = {
         format = lspkind.cmp_format({
-            before = require("tailwind-tools.cmp").lspkind_format,
+
             mode = "symbol_text",
             menu = ({
                 buffer = "[Buffer]",
@@ -83,40 +83,11 @@ local capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protoc
 
 local border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" }
 
--- Overwrite global diagnostic handler to use a bordered float
-local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
-function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
-    opts = opts or {}
-    opts.border = opts.border or border
-    return orig_util_open_floating_preview(contents, syntax, opts, ...)
-end
-
-local nvim_lsp = require("lspconfig")
-
-local lsp_signature = require("lsp_signature")
-lsp_signature.setup({
-    bind = true,
-    doc_lines = 0,
-    floating_window = true,
-    floating_window_above_cur_line = true,
-    hint_enable = false, -- virtual hint enable
-    close_timeout = 1,
-    floating_window_off_x = 10,
-    floating_windows_off_y = 0,
-    fix_pos = false,
-    handler_opts = {
-        border = "rounded",
-    },
-    max_height = 4,
-})
-
 -- https://github.com/jose-elias-alvarez/null-ls.nvim/wiki/Avoiding-LSP-formatting-conflicts#neovim-08
 local lsp_formatting_async = function(bufnr)
     vim.lsp.buf.format({
         filter = function(_)
-            -- apply whatever logic you want (in this example, we'll only use null-ls)
-            -- clients for which format on save should be enabled
-            return true -- client.name == "null-ls"
+            return true
         end,
         bufnr = bufnr,
         async = async,
@@ -127,47 +98,39 @@ local group = vim.api.nvim_create_augroup("lsp_format_on_save", { clear = false 
 local event = "BufWritePre" -- or "BufWritePost"
 local async = event == "BufWritePost"
 
-local null_ls = require("null-ls")
-local null_ls_sources = {
-    null_ls.builtins.formatting.pg_format,
-    null_ls.builtins.formatting.stylua,
-    null_ls.builtins.formatting.ocamlformat
-}
+-- LSP keybindings and format-on-save via LspAttach autocmd
+vim.api.nvim_create_autocmd("LspAttach", {
+    callback = function(args)
+        local bufnr = args.buf
+        local client = vim.lsp.get_client_by_id(args.data.client_id)
+        local opts = { buffer = bufnr, noremap = true, silent = true }
 
-local on_attach = function(client, bufnr)
-    local function buf_set_keymap(...)
-        vim.api.nvim_buf_set_keymap(bufnr, ...)
-    end
+        vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+        vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
+        vim.keymap.set("n", "gy", vim.lsp.buf.type_definition, opts)
+        vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
+        vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
+        vim.keymap.set("n", "ga", vim.lsp.buf.code_action, opts)
+        vim.keymap.set("n", "<leader>lr", vim.lsp.buf.rename, opts)
+        vim.keymap.set("n", "<leader>k", vim.diagnostic.open_float, opts)
+        vim.keymap.set("n", "gn", function() vim.diagnostic.jump({ count = 1 }) end, opts)
+        vim.keymap.set("n", "gN", function() vim.diagnostic.jump({ count = -1 }) end, opts)
+        vim.keymap.set("n", "<C-space>", vim.lsp.buf.hover, opts)
 
-    -- Mappings.
-    local opts = { noremap = true, silent = true }
-
-    -- See `:help vim.lsp.*` for documentation on any of the below functions
-    buf_set_keymap("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", opts)
-    buf_set_keymap("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<cr>", opts)
-    buf_set_keymap("n", "gy", "<cmd>lua vim.lsp.buf.type_definition()<CR>", opts)
-    buf_set_keymap("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<cr>", opts)
-    buf_set_keymap("n", "gr", "<cmd>lua vim.lsp.buf.references()<cr>", opts)
-    buf_set_keymap("n", "ga", "<cmd>lua vim.lsp.buf.code_action()<cr>", opts)
-    buf_set_keymap("n", "<leader>lr", "<cmd>lua vim.lsp.buf.rename()<CR>", opts)
-    buf_set_keymap("n", "<leader>k", "<cmd>lua vim.diagnostic.open_float()<CR>", opts)
-    buf_set_keymap("n", "gn", "<cmd>lua vim.diagnostic.goto_next()<CR>", opts)
-    buf_set_keymap("n", "gN", "<cmd>lua vim.diagnostic.goto_prev()<CR>", opts)
-    buf_set_keymap("n", "<C-space>", "<cmd>lua vim.lsp.buf.hover()<CR>", opts)
-
-    if client.supports_method("textDocument/formatting") then
-        -- format on save
-        vim.api.nvim_clear_autocmds({ buffer = bufnr, group = group })
-        vim.api.nvim_create_autocmd(event, {
-            buffer = bufnr,
-            group = group,
-            callback = function()
-                lsp_formatting_async(bufnr)
-            end,
-            desc = "[lsp] format on save",
-        })
-    end
-end
+        if client and client:supports_method("textDocument/formatting") then
+            -- format on save
+            vim.api.nvim_clear_autocmds({ buffer = bufnr, group = group })
+            vim.api.nvim_create_autocmd(event, {
+                buffer = bufnr,
+                group = group,
+                callback = function()
+                    lsp_formatting_async(bufnr)
+                end,
+                desc = "[lsp] format on save",
+            })
+        end
+    end,
+})
 
 -- Set updatetime for CursorHold
 -- 300ms of no cursor movement to trigger CursorHold
@@ -184,9 +147,16 @@ vim.api.nvim_create_autocmd("CursorHold", {
 -- this removes the jitter when warnings/errors flow in
 vim.opt.signcolumn = "yes"
 
+local null_ls = require("null-ls")
+local null_ls_sources = {
+    null_ls.builtins.formatting.pg_format,
+    null_ls.builtins.formatting.stylua,
+    null_ls.builtins.formatting.ocamlformat,
+    null_ls.builtins.formatting.prettier,
+}
+
 null_ls.setup({
     sources = null_ls_sources,
-    on_attach = on_attach,
 })
 
 vim.g.rustaceanvim = {
@@ -195,12 +165,13 @@ vim.g.rustaceanvim = {
     tools = {},
     -- LSP configuration
     server = {
-        on_attach = on_attach,
+        capabilities = capabilities,
         default_settings = {
             -- rust-analyzer language server configuration
             ['rust-analyzer'] = {
                 cargo = {
                     allFeatures = true,
+                    --allTargets = false,
                 },
                 diagnostics = {
                     disabled = { "macro-error" },
@@ -232,14 +203,9 @@ require("go").setup({
         },
     },                         -- true: apply go.nvim non-default gopls setup
     lsp_gofumpt = true,        -- true: set default gofmt in gopls format to gofumpt
-    lsp_on_attach = on_attach, -- if a on_attach function provided:  attach on_attach function to gopls
-    -- true: will use go.nvim on_attach if true
-    -- nil/false do nothing
+    lsp_on_attach = nil,        -- handled by LspAttach autocmd
 
     lsp_codelens = true,
-    -- gopls_remote_auto = true, -- set to false is you do not want to pass -remote=auto to gopls(enable share)
-    -- gopls_cmd = nil,
-    -- if you need to specify gopls path and cmd, e.g {"/home/user/lsp/gopls", "-logfile", "/var/log/gopls.log" }
     diagnostic = {   -- set diagnostic to false to disable vim.diagnostic setup
         hdlr = true, -- hook lsp diag handler
         underline = true,
@@ -258,14 +224,13 @@ require("go").setup({
 })
 
 -- setup python lsp
-nvim_lsp.pyright.setup({
-    on_attach = on_attach,
+vim.lsp.config('pyright', {
     capabilities = capabilities,
 })
+vim.lsp.enable('pyright')
 
 -- setup ts language server
-nvim_lsp.ts_ls.setup({
-    on_attach = on_attach,
+vim.lsp.config('ts_ls', {
     capabilities = capabilities,
     settings = {
         completions = {
@@ -273,78 +238,57 @@ nvim_lsp.ts_ls.setup({
         },
     },
 })
+vim.lsp.enable('ts_ls')
 
 -- setup eslint for js and ts
--- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#eslint
-nvim_lsp.eslint.setup({
+vim.lsp.config('eslint', {
     capabilities = capabilities,
-    on_attach = on_attach,
     settings = {
         format = false,
     },
 })
+vim.lsp.enable('eslint')
 
-nvim_lsp.lua_ls.setup({
+vim.lsp.config('lua_ls', {
     capabilities = capabilities,
-    on_attach = on_attach,
     settings = {
         Lua = {
             runtime = {
-                -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
                 version = "LuaJIT",
             },
             diagnostics = {
-                -- Get the language server to recognize the `vim` global
                 globals = { "vim" },
             },
             workspace = {
-                -- Make the server aware of Neovim runtime files
                 library = vim.api.nvim_get_runtime_file("", true),
             },
-            -- Do not send telemetry data containing a randomized but unique identifier
             telemetry = {
                 enable = false,
             },
         },
     },
 })
+vim.lsp.enable('lua_ls')
 
-nvim_lsp.clangd.setup({
-    on_attach = on_attach,
+vim.lsp.config('clangd', {
     capabilities = capabilities,
 })
+vim.lsp.enable('clangd')
 
-nvim_lsp.ocamllsp.setup({
-    on_attach = on_attach,
+vim.lsp.config('ocamllsp', {
     capabilities = capabilities,
 })
+vim.lsp.enable('ocamllsp')
 
-require("prettier").setup({
-    bin = "prettier", -- or `'prettierd'` (v0.22+)
-    filetypes = {
-        "css",
-        "graphql",
-        "html",
-        "javascript",
-        "javascriptreact",
-        "json",
-        "less",
-        "markdown",
-        "scss",
-        "typescript",
-        "typescriptreact",
-    },
-})
 
 -- setup Terraform language server
-nvim_lsp.terraformls.setup({
-    on_attach = on_attach,
+vim.lsp.config('terraformls', {
     capabilities = capabilities,
 })
+vim.lsp.enable('terraformls')
 
 -- setup Latex ls
-nvim_lsp.ltex.setup({
-    on_attach = on_attach,
+vim.lsp.config('ltex', {
     capabilities = capabilities,
     settings = {
         ltex = {
@@ -352,6 +296,7 @@ nvim_lsp.ltex.setup({
         },
     },
 })
+vim.lsp.enable('ltex')
 
 require("neotest").setup({
     adapters = {
@@ -359,9 +304,3 @@ require("neotest").setup({
     },
 })
 
-
-require("tailwind-tools").setup({
-    server = {
-        on_attach = on_attach,
-    },
-})

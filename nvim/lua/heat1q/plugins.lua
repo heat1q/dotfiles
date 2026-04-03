@@ -1,103 +1,54 @@
-require("packer").startup(function(use)
-    -- Packer can manage itself
-    use("wbthomason/packer.nvim")
+vim.pack.add({
+    "https://github.com/onsails/lspkind.nvim",
+    "https://github.com/hrsh7th/nvim-cmp",
+    "https://github.com/hrsh7th/cmp-nvim-lsp",
+    "https://github.com/hrsh7th/cmp-path",
+    "https://github.com/mrcjkb/rustaceanvim",
+    "https://github.com/nvim-lua/plenary.nvim",
+    "https://github.com/nvim-telescope/telescope.nvim",
+    "https://github.com/ray-x/go.nvim",
+    "https://github.com/ray-x/guihua.lua",
+    "https://github.com/mfussenegger/nvim-dap",
+    "https://github.com/rcarriga/nvim-dap-ui",
+    "https://github.com/theHamsta/nvim-dap-virtual-text",
 
-    use("neovim/nvim-lspconfig") -- Collection of common configurations for the Nvim LSP client
-    use("onsails/lspkind.nvim")
-    use("hrsh7th/nvim-cmp")      -- Completion framework
-    use("hrsh7th/cmp-nvim-lsp")  -- LSP completion source for nvim-cmp
-    use("hrsh7th/cmp-path")
-    --use("hrsh7th/cmp-buffer") -- Other usefull completion sources
-    use("mrcjkb/rustaceanvim")
-    use("nvim-lua/popup.nvim")
-    use("nvim-lua/plenary.nvim")
-    use("nvim-telescope/telescope.nvim") -- Fuzzy finder; requires fzf, ripgrep installed
-    use("preservim/nerdcommenter")
-    use("mbbill/undotree")
-    use("ray-x/lsp_signature.nvim")
-    use("ray-x/go.nvim")
-    use("ray-x/guihua.lua")
-    use("mfussenegger/nvim-dap")
-    use("rcarriga/nvim-dap-ui")
-    use("theHamsta/nvim-dap-virtual-text")
-    use("MunifTanjim/prettier.nvim")
-    use("nvimtools/none-ls.nvim")
-    use("lewis6991/gitsigns.nvim")
-    use("nvim-lualine/lualine.nvim")
-    use("windwp/nvim-autopairs")
-    use("lukas-reineke/indent-blankline.nvim")
-    use("windwp/nvim-ts-autotag")
-    use("tpope/vim-fugitive")
-    use("ThePrimeagen/harpoon")
-    use({
-        "nvim-tree/nvim-tree.lua",
-        requires = {
-            "nvim-tree/nvim-web-devicons", -- optional, for file icons
-        },
-    })
-    use({
-        "nvim-treesitter/nvim-treesitter",
-        run = ":TSUpdate",
-    })
-    use("nvim-treesitter/nvim-treesitter-context")
-    use({
-        "L3MON4D3/LuaSnip",
-        -- follow latest release.
-        tag = "v1.*",
-        -- install jsregexp (optional!:).
-        run = "make install_jsregexp",
-        requires = {
-            "rafamadriz/friendly-snippets",
-            "saadparwaiz1/cmp_luasnip",
-        },
-    })
-    use("saecki/crates.nvim")
-    use {
-        "nvim-neotest/neotest",
-        requires = {
-            "nvim-neotest/nvim-nio",
-            "nvim-lua/plenary.nvim",
-            "antoinemadec/FixCursorHold.nvim",
-            "nvim-treesitter/nvim-treesitter"
-        }
-    }
-    use({
-        "luckasRanarison/tailwind-tools.nvim",
-        run = ":UpdateRemotePlugins",
-        requires = {
-            "nvim-treesitter/nvim-treesitter",
-        },
-    })
+    "https://github.com/nvimtools/none-ls.nvim",
+    "https://github.com/lewis6991/gitsigns.nvim",
+    "https://github.com/nvim-lualine/lualine.nvim",
+    "https://github.com/windwp/nvim-autopairs",
+    "https://github.com/lukas-reineke/indent-blankline.nvim",
+    "https://github.com/windwp/nvim-ts-autotag",
+    "https://github.com/tpope/vim-fugitive",
+    "https://github.com/ThePrimeagen/harpoon",
+    "https://github.com/nvim-tree/nvim-web-devicons",
+    "https://github.com/nvim-tree/nvim-tree.lua",
+    "https://github.com/nvim-treesitter/nvim-treesitter",
+    "https://github.com/nvim-treesitter/nvim-treesitter-context",
 
-    -- Themes
-    use("rebelot/kanagawa.nvim")
-end)
+    "https://github.com/rafamadriz/friendly-snippets",
+    "https://github.com/saadparwaiz1/cmp_luasnip",
+    "https://github.com/L3MON4D3/LuaSnip",
+    "https://github.com/saecki/crates.nvim",
+    "https://github.com/nvim-neotest/nvim-nio",
+    "https://github.com/nvim-neotest/neotest",
 
-require("nvim-treesitter.configs").setup({
-    -- A list of parser names, or "all"
-    ensure_installed = {
-        "go",
-        "rust",
-        "c",
-        "javascript",
-        "typescript",
-        "python",
-        "hcl",
-    },
-    -- Install parsers synchronously (only applied to `ensure_installed`)
-    sync_install = false,
-    -- Automatically install missing parsers when entering buffer
-    auto_install = true,
-    -- List of parsers to ignore installing (for "all")
-    -- ignore_install = { "javascript" },
-    highlight = {
-        -- `false` will disable the whole extension
-        enable = true,
-        -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
-        -- Using this option may slow down your editor, and you may see some duplicate highlights.
-        -- Instead of true it can also be a list of languages
-        additional_vim_regex_highlighting = true,
-    },
+    "https://github.com/tpope/vim-abolish",
+    "https://github.com/rebelot/kanagawa.nvim",
+})
+
+-- Post-install hooks
+vim.api.nvim_create_autocmd("PackChanged", {
+    callback = function(ev)
+        if ev.data.spec.name == "nvim-treesitter" then
+            vim.cmd("TSUpdate")
+        end
+        if ev.data.spec.name == "LuaSnip" and ev.data.kind == "install" then
+            vim.fn.system("cd " .. ev.data.path .. " && make install_jsregexp")
+        end
+        if ev.data.spec.name == "tailwind-tools.nvim" then
+            vim.cmd("UpdateRemotePlugins")
+        end
+    end,
 })
 
 require("nvim-tree").setup({
@@ -115,6 +66,8 @@ require("nvim-tree").setup({
         enable = true,
     },
 })
+
+require("treesitter-context").setup()
 
 require("gitsigns").setup({
     signcolumn = true,
